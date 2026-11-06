@@ -1,3 +1,45 @@
+        .canvas-orientation-control {
+            display: flex;
+            width: 100%;
+            padding: 3px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #f1f5f9;
+        }
+
+        .canvas-orientation-control button {
+            flex: 1;
+            padding: 7px 10px;
+            border: 0;
+            border-radius: 5px;
+            background: transparent;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .canvas-orientation-control button[aria-pressed="true"] {
+            background: #0284c7;
+            color: white;
+            box-shadow: 0 1px 2px rgb(15 23 42 / 0.15);
+        }
+
+        #main-app.landscape-mode {
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+        #main-app.landscape-mode > aside,
+        #main-app.landscape-mode > section {
+            grid-column: 1 / -1 !important;
+        }
+
+        #main-app.landscape-mode #print-sheet {
+            max-width: min(330mm, calc(100vw - 3rem));
+            min-height: auto !important;
+            aspect-ratio: 330 / 210;
+        }
+
         /* Gaya khusus cetak untuk memastikan tata letak presisi */
         @media print {
             body {

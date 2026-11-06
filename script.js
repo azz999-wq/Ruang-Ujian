@@ -9,6 +9,7 @@
             roomName: "R. Pusaka",
             rows: 10,
             cols: 4,
+            canvasOrientation: 'portrait',
             showPengawas: true,
             supervisorPosition: 'center',
             footerText: "SANTRI YANG TIDAK MASUK RUANGAN UJIAN HARAP KONFIRMASI BENDAHARA UJIAN & SEKRETARIS UJIAN"
@@ -191,6 +192,7 @@
 
                 config = { ...config, ...state.config };
                 normalizeGridDimensions();
+                normalizeCanvasOrientation();
                 normalizeSupervisorPosition();
                 studentsList = Array.isArray(state.studentsList) ? state.studentsList : [];
                 gridData = state.gridData || {};
@@ -207,6 +209,7 @@
                 updateHeader();
                 updateFooter();
                 togglePengawas();
+                applyCanvasOrientation();
                 applySupervisorPosition();
                 updateStudentTextarea();
                 renderGrid();
@@ -262,6 +265,7 @@
 
             config = { ...config, ...imported.config };
             normalizeGridDimensions();
+            normalizeCanvasOrientation();
             normalizeSupervisorPosition();
             studentsList = Array.isArray(imported.studentsList) ? imported.studentsList : [];
             gridData = imported.gridData || {};
@@ -277,6 +281,7 @@
             updateHeader();
             updateFooter();
             togglePengawas();
+            applyCanvasOrientation();
             applySupervisorPosition();
             updateStudentTextarea();
             renderGrid();
@@ -296,6 +301,26 @@
         function normalizeGridDimensions() {
             config.rows = Math.max(1, Number.parseInt(config.rows, 10) || 10);
             config.cols = Math.min(8, Math.max(1, Number.parseInt(config.cols, 10) || 4));
+        }
+
+        function normalizeCanvasOrientation() {
+            if (!['portrait', 'landscape'].includes(config.canvasOrientation)) {
+                config.canvasOrientation = 'portrait';
+            }
+        }
+
+        function applyCanvasOrientation() {
+            normalizeCanvasOrientation();
+            document.getElementById('main-app').classList.toggle('landscape-mode', config.canvasOrientation === 'landscape');
+            document.querySelectorAll('[data-canvas-orientation]').forEach(button => {
+                button.setAttribute('aria-pressed', String(button.dataset.canvasOrientation === config.canvasOrientation));
+            });
+        }
+
+        function setCanvasOrientation(orientation) {
+            config.canvasOrientation = orientation;
+            applyCanvasOrientation();
+            saveCurrentState();
         }
 
         function normalizeSupervisorPosition() {
@@ -438,11 +463,18 @@
 
         window.addEventListener('afterprint', function() {
             document.body.classList.remove('print-student-cards-mode');
+            document.getElementById('canvas-orientation-print-style')?.remove();
             const target = document.getElementById('student-cards-print');
             target.innerHTML = '';
         });
 
         function printPage() {
+            const printStyle = document.createElement('style');
+            printStyle.id = 'canvas-orientation-print-style';
+            printStyle.textContent = config.canvasOrientation === 'landscape'
+                ? '@page { size: 330mm 210mm; }'
+                : '@page { size: 210mm 330mm; }';
+            document.head.appendChild(printStyle);
             window.print();
         }
 
