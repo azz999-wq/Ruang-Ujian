@@ -18,7 +18,7 @@ Buka `index.html` di browser, lalu pilih **Mulai Buat Denah**. Aplikasi tidak me
 ## Cetak dan Simpan
 
 - **Cetak Denah** membuka dialog cetak browser dengan orientasi F4 sesuai mode kanvas. Untuk menyimpan denah sebagai PDF, pilih **Save as PDF** pada dialog tersebut.
-- **Kartu Peserta** mencetak hingga delapan kartu per halaman F4 dalam tata letak dua kolom. Setiap kartu memuat kelas, nomor kursi, area tanda tangan pengawas untuk lima hari, dan watermark logo opsional.
+- **Kartu Peserta** mencetak hingga delapan kartu per halaman F4 dalam tata letak dua kolom dengan ukuran ringkas agar tidak terpotong. Setiap kartu memuat kelas, nomor kursi, area tanda tangan pengawas untuk lima hari, dan watermark logo opsional.
 - **Kartu Satuan** memungkinkan pemilihan satu peserta untuk dicetak sendiri dengan ukuran kartu yang sama seperti cetak massal. Untuk menyimpan sebagai PDF, pilih **Save as PDF** pada dialog cetak.
 - Tidak ada logo bawaan. Logo kartu dapat diunggah sendiri dalam format PNG, JPG, atau WEBP dengan ukuran maksimal 5 MB; logo disimpan di browser yang digunakan.
 
