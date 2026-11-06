@@ -1,0 +1,194 @@
+        /* Gaya khusus cetak untuk memastikan tata letak presisi */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-area {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 10mm !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+            body.print-student-cards-mode > * {
+                display: none !important;
+            }
+            body.print-student-cards-mode #student-cards-print {
+                display: grid !important;
+            }
+            .desk-card {
+                border-color: #000 !important;
+                box-shadow: none !important;
+            }
+        }
+
+        .student-cards-print {
+            display: none;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 5mm;
+        }
+
+        .student-card {
+            position: relative;
+            isolation: isolate;
+            min-height: 68mm;
+            border: 1.5px solid #0f172a;
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .student-card::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            border-radius: inherit;
+            background-image: var(--student-card-watermark);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 48% auto;
+            opacity: 0.12;
+            pointer-events: none;
+        }
+
+        .student-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 7px;
+        }
+
+        .student-card-title {
+            font-size: 9px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: #475569;
+        }
+
+        .student-card-room {
+            font-size: 10px;
+            text-align: right;
+            font-weight: 800;
+        }
+
+        .student-card-name {
+            font-size: 17px;
+            line-height: 1.2;
+            font-weight: 900;
+            overflow-wrap: anywhere;
+        }
+
+        .student-card-grade {
+            margin-top: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .student-card-identity {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .student-card-details {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .student-card-seat-box {
+            flex: 0 0 auto;
+            min-width: 46px;
+            min-height: 42px;
+            padding: 7px 10px;
+            border: 2px solid #0f172a;
+            border-radius: 9px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .student-card-status {
+            color: #be123c;
+        }
+
+        .student-card-signatures {
+            margin-top: 2px;
+        }
+
+        .student-card-sign-title {
+            font-size: 8px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .student-card-sign-days {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .student-card-sign-day {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+            font-size: 7px;
+            font-weight: 700;
+        }
+
+        .student-card-sign-line {
+            height: 1px;
+            border-bottom: 1px solid #64748b;
+        }
+
+        .student-card-rule {
+            margin-top: 5px;
+            text-align: right;
+            font-size: 7px;
+            color: #475569;
+        }
+
+        @media print {
+            body.print-student-cards-mode #student-cards-print {
+                display: grid !important;
+                width: 100%;
+                color: #0f172a;
+            }
+        }
+
+        /* Custom scrollbar untuk tabel & modal */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
