@@ -80,7 +80,7 @@
         .student-card {
             position: relative;
             isolation: isolate;
-            min-height: 78mm;
+            min-height: 68mm;
             border: 1.5px solid #102c46;
             border-radius: 8px;
             padding: 10px 12px;

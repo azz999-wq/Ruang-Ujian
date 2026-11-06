@@ -436,6 +436,14 @@
             document.getElementById('single-student-card-modal').classList.add('hidden');
         }
 
+        function prepareStudentCardsPrint() {
+            const printStyle = document.createElement('style');
+            printStyle.id = 'student-cards-page-style';
+            printStyle.textContent = '@page { size: 210mm 330mm; margin: 5mm; }';
+            document.head.appendChild(printStyle);
+            document.body.classList.add('print-student-cards-mode');
+        }
+
         function printSelectedStudentCard() {
             const selectedKey = document.getElementById('single-student-card-select').value;
             const target = document.getElementById('student-cards-print');
@@ -446,7 +454,7 @@
             }
 
             closeSingleStudentCardModal();
-            document.body.classList.add('print-student-cards-mode');
+            prepareStudentCardsPrint();
             window.print();
         }
 
@@ -457,13 +465,14 @@
                 alert('Belum ada peserta yang memiliki tempat duduk.');
                 return;
             }
-            document.body.classList.add('print-student-cards-mode');
+            prepareStudentCardsPrint();
             window.print();
         }
 
         window.addEventListener('afterprint', function() {
             document.body.classList.remove('print-student-cards-mode');
             document.getElementById('canvas-orientation-print-style')?.remove();
+            document.getElementById('student-cards-page-style')?.remove();
             const target = document.getElementById('student-cards-print');
             target.innerHTML = '';
         });
