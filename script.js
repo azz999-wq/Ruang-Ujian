@@ -19,6 +19,7 @@
         let studentsList = [];
         // Map penempatan di meja: key "R-C" (cth: "1-1" untuk A1, "7-3" untuk G3)
         let gridData = {};
+        let singleStudentCardOptions = [];
         
         let activeEditKey = null;
 
@@ -404,7 +405,7 @@
             return cards.join('');
         }
 
-        function getStudentCardOptionsHTML() {
+        function getStudentCardOptions() {
             const options = [];
             for (let r = 1; r <= config.rows; r++) {
                 for (let c = 1; c <= config.cols; c++) {
@@ -413,23 +414,53 @@
                     if (deskData.empty || (!deskData.name && !deskData.grade)) continue;
 
                     const label = `${getRowLabel(r)}${c} - ${deskData.name || '-'} (${deskData.grade || '-'})`;
-                    options.push(`<option value="${key}">${escapeHTML(label)}</option>`);
+                    options.push({
+                        key,
+                        label,
+                        searchText: `${key} ${label}`.toLocaleLowerCase()
+                    });
                 }
             }
-            return options.join('');
+            return options;
+        }
+
+        function filterStudentCardOptions() {
+            const search = document.getElementById('single-student-card-search');
+            const select = document.getElementById('single-student-card-select');
+            const previousSelection = select.value;
+            const query = search.value.trim().toLocaleLowerCase();
+            const matches = singleStudentCardOptions.filter(option => option.searchText.includes(query));
+
+            select.replaceChildren(...matches.map(option => {
+                const element = document.createElement('option');
+                element.value = option.key;
+                element.textContent = option.label;
+                return element;
+            }));
+
+            const hasPreviousSelection = matches.some(option => option.key === previousSelection);
+            if (matches.length) {
+                select.value = hasPreviousSelection ? previousSelection : matches[0].key;
+            }
+
+            document.getElementById('single-student-card-print-button').disabled = matches.length === 0;
+            document.getElementById('single-student-card-count').textContent = matches.length
+                ? `${matches.length} peserta ditemukan`
+                : 'Peserta tidak ditemukan';
         }
 
         function openSingleStudentCardModal() {
-            const options = getStudentCardOptionsHTML();
-            if (!options) {
+            singleStudentCardOptions = getStudentCardOptions();
+            if (!singleStudentCardOptions.length) {
                 alert('Belum ada peserta yang memiliki tempat duduk.');
                 return;
             }
 
-            const select = document.getElementById('single-student-card-select');
-            select.innerHTML = options;
+            document.getElementById('single-student-card-search').value = '';
+            document.getElementById('single-student-card-select').value = '';
+            filterStudentCardOptions();
             document.getElementById('single-student-card-modal').classList.remove('hidden');
-            select.focus();
+            document.getElementById('single-student-card-search').focus();
         }
 
         function closeSingleStudentCardModal() {
@@ -446,6 +477,7 @@
 
         function printSelectedStudentCard() {
             const selectedKey = document.getElementById('single-student-card-select').value;
+            if (!selectedKey) return;
             const target = document.getElementById('student-cards-print');
             target.innerHTML = buildStudentCardsHTML(selectedKey);
             if (!target.childElementCount) {
