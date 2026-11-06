@@ -495,9 +495,11 @@
             try {
                 Object.assign(main.style, {
                     position: 'fixed',
-                    inset: '0',
+                    top: '0',
+                    left: '0',
                     display: 'block',
-                    width: '100vw',
+                    boxSizing: 'border-box',
+                    width: `${pageWidth - 10}mm`,
                     maxWidth: 'none',
                     margin: '0',
                     padding: '0',
@@ -512,7 +514,7 @@
                     maxWidth: 'none',
                     height: 'auto',
                     aspectRatio: 'auto',
-                    margin: '0 auto',
+                    margin: '0',
                     padding: '10mm',
                     border: '0',
                     borderRadius: '0',
@@ -529,8 +531,8 @@
                         scale: 2,
                         useCORS: true,
                         backgroundColor: '#ffffff',
-                        windowWidth: Math.ceil(pageWidth / 25.4 * 96),
-                        windowHeight: Math.ceil(pageHeight / 25.4 * 96)
+                        windowWidth: Math.ceil((pageWidth - 10) / 25.4 * 96),
+                        windowHeight: Math.ceil((pageHeight - 10) / 25.4 * 96)
                     },
                     jsPDF: {
                         unit: 'mm',
