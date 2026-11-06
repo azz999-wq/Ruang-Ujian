@@ -434,68 +434,19 @@
             document.getElementById('input-cols').value = 4;
             document.getElementById('check-enable-pengawas').checked = true;
 
-            // Map sesuai urutan denah
-            gridData = {};
-            
-            // Baris A (1-3)
-            gridData["1-1"] = { name: "Agiansyah S. Maulana", grade: "1 TSANAWI", isRed: false };
-            gridData["1-2"] = { name: "Alby Fahri A.", grade: "1 IBTIDA", isRed: false };
-            gridData["1-3"] = { name: "Faris Alfarisi", grade: "2 IBTIDA", isRed: false };
-            gridData["1-4"] = { empty: true };
-
-            // Baris B (1-4)
-            gridData["2-1"] = { name: "M. Zavier Evans", grade: "3 IBTIDA", isRed: false };
-            gridData["2-2"] = { name: "Burhan", grade: "1 TSANAWI", isRed: false };
-            gridData["2-3"] = { name: "Gilang Nugraha", grade: "2 TSANAWI", isRed: false };
-            gridData["2-4"] = { name: "Iqbal", grade: "3 TSANAWI", isRed: false };
-
-            // Baris C (1-4)
-            gridData["3-1"] = { name: "Muhammad Adakiya N.", grade: "4 TSANAWI", isRed: false };
-            gridData["3-2"] = { name: "Dzikri M. Fadhlan", grade: "1 IBTIDA", isRed: false };
-            gridData["3-3"] = { name: "Rifan Lutfi F.", grade: "2 IBTIDA", isRed: false };
-            gridData["3-4"] = { name: "M. Sabil Nuda", grade: "3 IBTIDA", isRed: false };
-
-            // Baris D (1-4)
-            gridData["4-1"] = { name: "Deni Ramdani", grade: "1 TSANAWI", isRed: false };
-            gridData["4-2"] = { name: "Imam Mutaqin", grade: "2 IBTIDA", isRed: false };
-            gridData["4-3"] = { name: "M. Faiz Fadhilah", grade: "3 TSANAWI", isRed: false };
-            gridData["4-4"] = { name: "Muhammad Akbarudin", grade: "4 TSANAWI", isRed: false };
-
-            // Baris E (1-4)
-            gridData["5-1"] = { name: "Khairul Azam M.", grade: "2 IBTIDA", isRed: false };
-            gridData["5-2"] = { name: "M. Alif Fauzan", grade: "3 IBTIDA", isRed: true };
-            gridData["5-3"] = { name: "Devansyah", grade: "1 TSANAWI", isRed: false };
-            gridData["5-4"] = { name: "Hasbi Mahesa", grade: "2 TSANAWI", isRed: false };
-
-            // Baris F (1-3)
-            gridData["6-1"] = { name: "M. Farel Budiman", grade: "3 TSANAWI", isRed: false };
-            gridData["6-2"] = { name: "Muhammad Fahri Rahmani", grade: "4 TSANAWI", isRed: true };
-            gridData["6-3"] = { name: "M. Hasbi Alghifary", grade: "2 IBTIDA", isRed: false };
-            gridData["6-4"] = { empty: true };
-
-            // Baris G (1-3, G4 berisi Iqbal Agustia)
-            gridData["7-1"] = { name: "Rabban R. Ridwan", grade: "3 IBTIDA", isRed: false };
-            gridData["7-2"] = { name: "Fathan Almaidan", grade: "1 TSANAWI", isRed: false };
-            gridData["7-3"] = { empty: true }; // Bebas karena pengawas pindah ke depan
-            gridData["7-4"] = { name: "Iqbal Agustia", grade: "2 TSANAWI", isRed: false };
-
-            // Baris H (1-4)
-            gridData["8-1"] = { name: "Habibi Khairul", grade: "1 IBTIDA", isRed: false };
-            gridData["8-2"] = { name: "Muhammad Daffa", grade: "2 IBTIDA", isRed: false };
-            gridData["8-3"] = { name: "Muhammad Fahri", grade: "3 IBTIDA", isRed: false };
-            gridData["8-4"] = { name: "Fikri Ardiansyah", grade: "1 TSANAWI", isRed: false };
-
-            // Baris I (1-4)
-            gridData["9-1"] = { name: "Kholid Padhil A.", grade: "2 TSANAWI", isRed: false };
-            gridData["9-2"] = { name: "Muhammad Fajar M.", grade: "3 IBTIDA", isRed: false };
-            gridData["9-3"] = { name: "M. Abdul Aziz", grade: "2 IBTIDA", isRed: false };
-            gridData["9-4"] = { name: "Ibal Hidayatullah", grade: "2 TSANAWI", isRed: false };
-
-            // Baris J (1-4)
-            gridData["10-1"] = { name: "Majida Arjaei", grade: "2 IBTIDA", isRed: false };
-            gridData["10-2"] = { name: "Muhammad Lutfi Farhan", grade: "3 TSANAWI", isRed: false };
-            gridData["10-3"] = { name: "Muhammad Thoriq", grade: "3 IBTIDA", isRed: false };
-            gridData["10-4"] = { name: "M. Agus Ramdan", grade: "2 IBTIDA", isRed: false };
+            // Indeks peserta per kursi; null menandai kursi kosong.
+            const sampleSeating = [
+                [0, 1, 2, null], [3, 4, 5, 6], [7, 8, 9, 10],
+                [11, 12, 13, 14], [15, 16, 17, 18], [19, 20, 21, null],
+                [22, 23, null, 24], [25, 26, 27, 28], [29, 30, 31, 32],
+                [33, 34, 35, 36]
+            ];
+            gridData = Object.fromEntries(sampleSeating.flatMap((row, rowIndex) =>
+                row.map((studentIndex, colIndex) => [
+                    `${rowIndex + 1}-${colIndex + 1}`,
+                    studentIndex === null ? { empty: true } : { ...SAMPLE_STUDENTS[studentIndex] }
+                ])
+            ));
 
             renderGrid();
         }
