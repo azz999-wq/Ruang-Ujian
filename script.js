@@ -360,18 +360,9 @@
 
         window.addEventListener('afterprint', function() {
             document.body.classList.remove('print-student-cards-mode');
-            document.getElementById('f4-print-style')?.remove();
             const target = document.getElementById('student-cards-print');
             target.innerHTML = '';
         });
-
-        function downloadPdfF4() {
-            const printStyle = document.createElement('style');
-            printStyle.id = 'f4-print-style';
-            printStyle.textContent = '@page { size: 210mm 330mm; margin: 5mm 0 0; }';
-            document.head.appendChild(printStyle);
-            window.print();
-        }
 
         function printPage() {
             window.print();
