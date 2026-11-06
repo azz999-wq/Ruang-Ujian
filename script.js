@@ -481,14 +481,15 @@
             const pageWidth = isLandscape ? 330 : 210;
             const pageHeight = isLandscape ? 210 : 330;
             const exportSheet = document.getElementById('print-sheet').cloneNode(true);
+            exportSheet.id = 'pdf-export-sheet';
             const roomCode = String(config.roomCode || 'ruangan').trim().replace(/[^a-z0-9._-]+/gi, '-') || 'ruangan';
 
             Object.assign(exportSheet.style, {
-                position: 'fixed',
-                top: '0',
-                left: '0',
-                zIndex: '-1',
-                pointerEvents: 'none',
+                position: 'static',
+                top: 'auto',
+                left: 'auto',
+                zIndex: 'auto',
+                pointerEvents: 'auto',
                 boxSizing: 'border-box',
                 width: `${pageWidth - 10}mm`,
                 maxWidth: 'none',
@@ -503,7 +504,6 @@
                 background: '#ffffff'
             });
 
-            document.body.appendChild(exportSheet);
             button.disabled = true;
             buttonLabel.textContent = 'Menyiapkan PDF...';
 
@@ -529,7 +529,6 @@
                 console.error('Gagal membuat PDF denah:', error);
                 alert('PDF gagal dibuat. Coba muat ulang halaman lalu unduh kembali.');
             } finally {
-                exportSheet.remove();
                 button.disabled = false;
                 buttonLabel.textContent = originalLabel;
             }
