@@ -3,84 +3,633 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#f3f7f5">
+    <meta name="description" content="DenahUjian Pro membantu menata ruang ujian dan kartu peserta dengan rapi.">
     <title>DenahUjian Pro - Pembuat Denah Ujian</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985'
-                        }
-                    }
-                }
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #17332f;
+            --muted: #62736e;
+            --green: #0a765f;
+            --green-dark: #075548;
+            --mint: #e8f2ed;
+            --paper: #f3f7f5;
+            --white: #ffffff;
+            --line: #d7e2dd;
+            --orange: #e77451;
+            --yellow: #e7bd53;
+            --blue: #427c91;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-width: 320px;
+            min-height: 100vh;
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Manrope', sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .topbar {
+            width: min(1200px, calc(100% - 48px));
+            min-height: 76px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 9px;
+            background: var(--green);
+            color: var(--white);
+            font-size: 16px;
+        }
+
+        .brand-pro {
+            color: var(--green);
+        }
+
+        .top-link {
+            display: inline-flex;
+            min-height: 40px;
+            align-items: center;
+            gap: 10px;
+            padding: 0 15px;
+            border: 1px solid #b9cec5;
+            border-radius: 6px;
+            color: var(--green-dark);
+            font-size: 12px;
+            font-weight: 800;
+            transition: background 160ms ease, color 160ms ease;
+        }
+
+        .top-link:hover {
+            background: var(--green-dark);
+            color: var(--white);
+        }
+
+        .page-main {
+            width: min(1200px, calc(100% - 48px));
+            margin: 0 auto;
+            padding: 42px 0 48px;
+        }
+
+        .hero-intro {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 28px;
+            margin-bottom: 30px;
+            animation: arrive 520ms ease both;
+        }
+
+        .hero-copy {
+            max-width: 780px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin: 0 0 14px;
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .eyebrow-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: var(--orange);
+            transform: rotate(45deg);
+        }
+
+        h1 {
+            margin: 0;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 62px;
+            line-height: 1.02;
+            font-weight: 700;
+        }
+
+        h1 span {
+            color: var(--green);
+        }
+
+        .hero-description {
+            max-width: 590px;
+            margin: 15px 0 0;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .hero-action {
+            flex: 0 0 auto;
+            display: inline-flex;
+            min-height: 50px;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 0 18px;
+            border-radius: 6px;
+            background: var(--green);
+            color: var(--white);
+            font-size: 13px;
+            font-weight: 800;
+            box-shadow: 0 8px 18px rgb(7 85 72 / 0.14);
+            transition: background 160ms ease, transform 160ms ease;
+        }
+
+        .hero-action:hover {
+            transform: translateY(-2px);
+            background: var(--green-dark);
+        }
+
+        .hero-action-icon {
+            width: 27px;
+            height: 27px;
+            display: grid;
+            place-items: center;
+            border-radius: 4px;
+            background: rgb(255 255 255 / 0.16);
+        }
+
+        .preview-panel {
+            overflow: hidden;
+            border: 1px solid #cbdad3;
+            border-radius: 10px;
+            background: var(--white);
+            box-shadow: 0 18px 48px rgb(24 60 49 / 0.09);
+            animation: arrive 620ms 70ms ease both;
+        }
+
+        .preview-header {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 14px 22px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .preview-kicker {
+            display: block;
+            margin-bottom: 3px;
+            color: var(--muted);
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .preview-title {
+            margin: 0;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .preview-title span {
+            color: var(--muted);
+            font-family: 'Manrope', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .paper-tag {
+            display: inline-flex;
+            min-height: 30px;
+            align-items: center;
+            gap: 8px;
+            padding: 0 10px;
+            border: 1px solid #c5d8ce;
+            border-radius: 4px;
+            color: var(--green-dark);
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .paper-tag i {
+            color: var(--orange);
+        }
+
+        .room-preview {
+            padding: 22px 24px 18px;
+            background: #f8fbf9;
+        }
+
+        .front-area {
+            max-width: 360px;
+            margin: 0 auto 18px;
+            text-align: center;
+        }
+
+        .front-label {
+            margin: 0 auto 8px;
+            color: #71847c;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .board-line {
+            height: 3px;
+            margin-bottom: 9px;
+            border-top: 2px dashed #b6c8bf;
+        }
+
+        .supervisor-desk {
+            width: 190px;
+            min-height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 0 auto;
+            border: 1px solid var(--green-dark);
+            border-radius: 4px;
+            background: var(--green);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .seat-grid {
+            display: grid;
+            grid-template-columns: 32px repeat(4, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .column-number,
+        .row-letter {
+            min-height: 30px;
+            display: grid;
+            place-items: center;
+            border: 1px solid #cad9d2;
+            border-radius: 4px;
+            background: #eaf1ed;
+            color: var(--ink);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .seat-corner {
+            min-height: 30px;
+        }
+
+        .desk {
+            min-width: 0;
+            min-height: 55px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            padding: 7px 9px 6px;
+            border: 1px solid #aebfb7;
+            border-radius: 5px;
+            background: var(--white);
+        }
+
+        .desk-name {
+            overflow: hidden;
+            color: var(--ink);
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1.25;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .desk-grade {
+            align-self: flex-start;
+            max-width: 100%;
+            overflow: hidden;
+            color: var(--muted);
+            font-size: 8px;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .desk.empty {
+            align-items: center;
+            justify-content: center;
+            border-style: dashed;
+            background: transparent;
+            color: #95a69e;
+            font-size: 9px;
+            font-style: italic;
+        }
+
+        .desk.marked {
+            border-left: 3px solid var(--orange);
+        }
+
+        .preview-footer {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 22px;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .preview-footer > span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preview-footer i {
+            color: var(--green);
+        }
+
+        .preview-metrics {
+            display: flex;
+            gap: 14px;
+            color: var(--ink);
+        }
+
+        .preview-metrics span + span {
+            padding-left: 14px;
+            border-left: 1px solid var(--line);
+        }
+
+        .page-footer {
+            width: min(1200px, calc(100% - 48px));
+            min-height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 0 auto;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .footer-brand {
+            color: var(--ink);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        @keyframes arrive {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 700px) {
+            .topbar,
+            .page-main,
+            .page-footer {
+                width: calc(100% - 32px);
             }
-        };
-    </script>
+
+            .topbar {
+                min-height: 66px;
+            }
+
+            .brand {
+                gap: 8px;
+                font-size: 15px;
+            }
+
+            .brand-mark {
+                width: 34px;
+                height: 34px;
+            }
+
+            .top-link {
+                min-height: 36px;
+                gap: 7px;
+                padding: 0 10px;
+                font-size: 10px;
+            }
+
+            .page-main {
+                padding: 31px 0 34px;
+            }
+
+            .hero-intro {
+                display: block;
+                margin-bottom: 24px;
+            }
+
+            h1 {
+                font-size: 44px;
+            }
+
+            .hero-description {
+                max-width: 460px;
+                margin-top: 12px;
+                font-size: 13px;
+                line-height: 1.65;
+            }
+
+            .hero-action {
+                min-height: 46px;
+                margin-top: 19px;
+                font-size: 12px;
+            }
+
+            .preview-header {
+                min-height: 62px;
+                padding: 12px 14px;
+            }
+
+            .preview-title {
+                font-size: 17px;
+            }
+
+            .room-preview {
+                padding: 18px 12px 14px;
+            }
+
+            .seat-grid {
+                grid-template-columns: 24px repeat(4, minmax(0, 1fr));
+                gap: 5px;
+            }
+
+            .column-number,
+            .row-letter,
+            .seat-corner {
+                min-height: 26px;
+            }
+
+            .desk {
+                min-height: 48px;
+                padding: 6px 4px 5px;
+            }
+
+            .desk-name {
+                font-size: 9px;
+            }
+
+            .desk-grade {
+                font-size: 7px;
+            }
+
+            .preview-footer {
+                padding: 9px 12px;
+                font-size: 9px;
+            }
+
+            .preview-metrics {
+                gap: 8px;
+            }
+
+            .preview-metrics span + span {
+                padding-left: 8px;
+            }
+
+            .page-footer {
+                min-height: 52px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .paper-tag {
+                gap: 5px;
+                padding: 0 7px;
+                font-size: 8px;
+            }
+
+            .desk-name {
+                font-size: 8px;
+            }
+
+            .preview-footer > span {
+                gap: 5px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
 </head>
-<body class="min-h-screen bg-slate-950 font-sans text-white">
-    <header class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
-        <a href="index.html" class="flex items-center gap-3" aria-label="DenahUjian Pro Beranda">
-            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-500 text-white shadow-lg shadow-sky-950/40">
-                <i class="fa-solid fa-table-cells-large text-xl"></i>
-            </span>
-            <span>
-                <span class="block text-lg font-extrabold leading-tight">DenahUjian Pro</span>
-                <span class="block text-xs text-slate-400">Pembuat denah ruangan ujian</span>
-            </span>
+<body>
+    <header class="topbar">
+        <a href="index.html" class="brand" aria-label="DenahUjian Pro Beranda">
+            <span class="brand-mark" aria-hidden="true"><i class="fa-solid fa-table-cells-large"></i></span>
+            <span>DenahUjian <span class="brand-pro">Pro</span></span>
+        </a>
+        <a href="generator.html" class="top-link">
+            <span>Buka aplikasi</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
         </a>
     </header>
 
-    <main class="mx-auto flex max-w-7xl flex-col items-center px-5 pb-16 pt-12 text-center sm:px-8 sm:pt-20">
-        <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-sky-400/20 bg-sky-400/10 px-4 py-2 text-xs font-semibold tracking-wide text-sky-200">
-            <i class="fa-solid fa-graduation-cap"></i>
-            <span>Persiapan ujian jadi lebih praktis</span>
-        </div>
-
-        <h1 class="max-w-4xl text-4xl font-black leading-tight tracking-tight sm:text-6xl">
-            Atur tempat duduk ujian
-            <span class="bg-gradient-to-r from-sky-300 to-cyan-200 bg-clip-text text-transparent">lebih mudah.</span>
-        </h1>
-        <p class="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-            Buat denah ruangan, masukkan peserta per kelas, lalu cetak denah dan kartu peserta dalam beberapa langkah.
-        </p>
-
-        <a href="generator.html" class="mt-9 inline-flex items-center gap-3 rounded-xl bg-sky-500 px-7 py-4 text-base font-bold text-white shadow-xl shadow-sky-950/50 transition hover:-translate-y-0.5 hover:bg-sky-400 focus:outline-none focus:ring-4 focus:ring-sky-300/40">
-            <i class="fa-solid fa-arrow-right"></i>
-            Mulai Buat Denah
-        </a>
-
-        <div class="mt-16 grid w-full max-w-3xl grid-cols-1 gap-3 text-left sm:grid-cols-3">
-            <div class="rounded-xl border border-white/10 bg-white/5 p-4">
-                <i class="fa-solid fa-users mb-3 text-sky-300"></i>
-                <p class="text-sm font-bold">Input per kelas</p>
-                <p class="mt-1 text-xs leading-5 text-slate-400">Kelola peserta sesuai tingkat.</p>
+    <main class="page-main">
+        <section class="landing-hero" aria-labelledby="page-title">
+            <div class="hero-intro">
+                <div class="hero-copy">
+                    <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> PENATAAN RUANG UJIAN</p>
+                    <h1 id="page-title">DenahUjian <span>Pro.</span></h1>
+                    <p class="hero-description">Susun tempat duduk, kelola peserta, dan siapkan kartu ujian dalam satu ruang kerja.</p>
+                    <a href="generator.html" class="hero-action">
+                        <span>Mulai buat denah</span>
+                        <span class="hero-action-icon"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+                    </a>
+                </div>
             </div>
-            <div class="rounded-xl border border-white/10 bg-white/5 p-4">
-                <i class="fa-solid fa-chair mb-3 text-sky-300"></i>
-                <p class="text-sm font-bold">Atur tempat duduk</p>
-                <p class="mt-1 text-xs leading-5 text-slate-400">Bagikan peserta otomatis atau edit meja.</p>
+
+            <div class="preview-panel" role="img" aria-label="Pratinjau denah ruang ujian dengan tiga baris dan empat kolom">
+                <div class="preview-header">
+                    <div>
+                        <span class="preview-kicker">Contoh denah</span>
+                        <h2 class="preview-title">R.005 <span>· Pusaka</span></h2>
+                    </div>
+                    <span class="paper-tag"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> F4 · POTRET</span>
+                </div>
+
+                <div class="room-preview">
+                    <div class="front-area">
+                        <p class="front-label">Papan tulis / depan kelas</p>
+                        <div class="board-line"></div>
+                        <div class="supervisor-desk"><i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i> MEJA PENGAWAS</div>
+                    </div>
+
+                    <div class="seat-grid" aria-hidden="true">
+                        <span class="seat-corner"></span>
+                        <span class="column-number">1</span>
+                        <span class="column-number">2</span>
+                        <span class="column-number">3</span>
+                        <span class="column-number">4</span>
+
+                        <span class="row-letter">A</span>
+                        <div class="desk marked"><span class="desk-name">Agiansyah S.</span><span class="desk-grade">1 TSANAWI</span></div>
+                        <div class="desk"><span class="desk-name">Alby Fahri</span><span class="desk-grade">1 IBTIDA</span></div>
+                        <div class="desk"><span class="desk-name">Faris Alfarisi</span><span class="desk-grade">2 IBTIDA</span></div>
+                        <div class="desk empty">Kosong</div>
+
+                        <span class="row-letter">B</span>
+                        <div class="desk"><span class="desk-name">M. Zavier</span><span class="desk-grade">3 IBTIDA</span></div>
+                        <div class="desk"><span class="desk-name">Burhan</span><span class="desk-grade">1 TSANAWI</span></div>
+                        <div class="desk"><span class="desk-name">Gilang Nugraha</span><span class="desk-grade">2 TSANAWI</span></div>
+                        <div class="desk"><span class="desk-name">Iqbal</span><span class="desk-grade">3 TSANAWI</span></div>
+
+                        <span class="row-letter">C</span>
+                        <div class="desk"><span class="desk-name">Deni Ramdan</span><span class="desk-grade">1 TSANAWI</span></div>
+                        <div class="desk"><span class="desk-name">Imam Mutaqin</span><span class="desk-grade">2 IBTIDA</span></div>
+                        <div class="desk"><span class="desk-name">M. Faiz</span><span class="desk-grade">3 TSANAWI</span></div>
+                        <div class="desk"><span class="desk-name">Muhammad A.</span><span class="desk-grade">4 TSANAWI</span></div>
+                    </div>
+                </div>
+
+                <div class="preview-footer">
+                    <span><i class="fa-solid fa-users" aria-hidden="true"></i> Contoh susunan peserta</span>
+                    <span class="preview-metrics"><span>4 kolom</span><span>3 baris</span></span>
+                </div>
             </div>
-            <div class="rounded-xl border border-white/10 bg-white/5 p-4">
-                <i class="fa-solid fa-print mb-3 text-sky-300"></i>
-                <p class="text-sm font-bold">Siap dicetak</p>
-                <p class="mt-1 text-xs leading-5 text-slate-400">Cetak denah dan kartu tiap peserta.</p>
-            </div>
-        </div>
+        </section>
     </main>
 
-    <footer class="px-5 pb-6 text-center text-xs text-slate-500">
-        DenahUjian Pro
+    <footer class="page-footer">
+        <span class="footer-brand">DenahUjian Pro</span>
+        <span>Ruang ujian · Denah · Kartu peserta</span>
     </footer>
 </body>
 </html>

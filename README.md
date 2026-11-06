@@ -4,7 +4,7 @@ DenahUjian Pro adalah aplikasi web sederhana untuk menyusun denah tempat duduk u
 
 ## Menjalankan Aplikasi
 
-Buka `index.html` di browser, lalu pilih **Mulai Buat Denah**. Aplikasi tidak memerlukan proses build atau instalasi package. Koneksi internet diperlukan untuk memuat Tailwind CSS, Google Fonts, dan Font Awesome dari CDN.
+Buka `index.html` di browser, lalu pilih **Mulai buat denah** atau **Buka aplikasi**. Beranda menampilkan pratinjau contoh denah sebelum masuk ke generator. Aplikasi tidak memerlukan proses build atau instalasi package. Koneksi internet diperlukan untuk memuat Google Fonts dan Font Awesome dari CDN.
 
 ## Membuat Denah
 
