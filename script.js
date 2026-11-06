@@ -480,34 +480,47 @@
             const isLandscape = config.canvasOrientation === 'landscape';
             const pageWidth = isLandscape ? 330 : 210;
             const pageHeight = isLandscape ? 210 : 330;
-            const exportSheet = document.getElementById('print-sheet').cloneNode(true);
-            exportSheet.id = 'pdf-export-sheet';
+            const main = document.getElementById('main-app');
+            const section = main.querySelector('section');
+            const sheet = document.getElementById('print-sheet');
+            const originalMainStyle = main.getAttribute('style');
+            const originalSectionStyle = section.getAttribute('style');
+            const originalSheetStyle = sheet.getAttribute('style');
             const roomCode = String(config.roomCode || 'ruangan').trim().replace(/[^a-z0-9._-]+/gi, '-') || 'ruangan';
-
-            Object.assign(exportSheet.style, {
-                position: 'static',
-                top: 'auto',
-                left: 'auto',
-                zIndex: 'auto',
-                pointerEvents: 'auto',
-                boxSizing: 'border-box',
-                width: `${pageWidth - 10}mm`,
-                maxWidth: 'none',
-                minHeight: `${pageHeight - 10}mm`,
-                height: 'auto',
-                aspectRatio: 'auto',
-                margin: '0',
-                padding: '10mm',
-                border: '0',
-                borderRadius: '0',
-                boxShadow: 'none',
-                background: '#ffffff'
-            });
 
             button.disabled = true;
             buttonLabel.textContent = 'Menyiapkan PDF...';
+            document.body.classList.add('pdf-exporting');
 
             try {
+                Object.assign(main.style, {
+                    position: 'fixed',
+                    inset: '0',
+                    display: 'block',
+                    width: '100vw',
+                    maxWidth: 'none',
+                    margin: '0',
+                    padding: '0',
+                    zIndex: '9999',
+                    background: '#ffffff'
+                });
+                Object.assign(section.style, { display: 'block', width: '100%', margin: '0' });
+                Object.assign(sheet.style, {
+                    position: 'relative',
+                    boxSizing: 'border-box',
+                    width: `${pageWidth - 10}mm`,
+                    maxWidth: 'none',
+                    height: 'auto',
+                    aspectRatio: 'auto',
+                    margin: '0 auto',
+                    padding: '10mm',
+                    border: '0',
+                    borderRadius: '0',
+                    boxShadow: 'none',
+                    background: '#ffffff'
+                });
+                sheet.style.setProperty('min-height', `${pageHeight - 10}mm`, 'important');
+
                 await html2pdf().set({
                     margin: 5,
                     filename: `denah-ujian-${roomCode}.pdf`,
@@ -516,7 +529,8 @@
                         scale: 2,
                         useCORS: true,
                         backgroundColor: '#ffffff',
-                        windowWidth: Math.ceil((pageWidth - 10) / 25.4 * 96)
+                        windowWidth: Math.ceil(pageWidth / 25.4 * 96),
+                        windowHeight: Math.ceil(pageHeight / 25.4 * 96)
                     },
                     jsPDF: {
                         unit: 'mm',
@@ -524,11 +538,18 @@
                         orientation: isLandscape ? 'landscape' : 'portrait'
                     },
                     pagebreak: { mode: ['css', 'legacy'] }
-                }).from(exportSheet).save();
+                }).from(sheet).save();
             } catch (error) {
                 console.error('Gagal membuat PDF denah:', error);
                 alert('PDF gagal dibuat. Coba muat ulang halaman lalu unduh kembali.');
             } finally {
+                if (originalMainStyle === null) main.removeAttribute('style');
+                else main.setAttribute('style', originalMainStyle);
+                if (originalSectionStyle === null) section.removeAttribute('style');
+                else section.setAttribute('style', originalSectionStyle);
+                if (originalSheetStyle === null) sheet.removeAttribute('style');
+                else sheet.setAttribute('style', originalSheetStyle);
+                document.body.classList.remove('pdf-exporting');
                 button.disabled = false;
                 buttonLabel.textContent = originalLabel;
             }
