@@ -621,6 +621,8 @@
         function renderGrid() {
             const gridContainer = document.getElementById('grid-container');
             const colHeadersContainer = document.getElementById('col-headers-container');
+            const nameFontSize = Math.max(9, Math.round(14 - config.cols * 0.625));
+            const gradeFontSize = Math.max(8, Math.round(11 - config.cols * 0.375));
 
             gridContainer.innerHTML = '';
             colHeadersContainer.innerHTML = '';
@@ -652,7 +654,7 @@
                     const deskData = gridData[key] || {};
 
                     const deskCard = document.createElement('div');
-                    deskCard.className = "flex-1 desk-card bg-white border border-slate-900 rounded text-center overflow-hidden cursor-pointer hover:ring-2 hover:ring-brand-500 transition flex flex-col justify-between min-h-[46px] sm:min-h-[52px]";
+                    deskCard.className = "min-w-0 flex-1 desk-card bg-white border border-slate-900 rounded text-center overflow-hidden cursor-pointer hover:ring-2 hover:ring-brand-500 transition flex flex-col justify-between min-h-[46px] sm:min-h-[52px]";
                     deskCard.onclick = () => openEditModal(r, c);
 
                     // Check jika meja kosong
@@ -665,10 +667,10 @@
                         const isRedClass = deskData.isRed ? "text-rose-600 font-bold" : "text-slate-800 font-medium";
                         
                         deskCard.innerHTML = `
-                            <div class="px-1 py-1 text-[10px] sm:text-xs truncate ${isRedClass} border-b border-slate-300 leading-tight">
+                            <div class="min-w-0 whitespace-normal break-words px-1 py-1 ${isRedClass} border-b border-slate-300 leading-tight" style="font-size: ${nameFontSize}px">
                                 ${deskData.name || '-'}
                             </div>
-                            <div class="px-1 py-0.5 text-[9px] sm:text-[10px] font-semibold text-slate-900 uppercase tracking-tight bg-slate-50">
+                            <div class="min-w-0 whitespace-normal break-words px-1 py-0.5 font-semibold text-slate-900 uppercase tracking-tight bg-slate-50" style="font-size: ${gradeFontSize}px">
                                 ${deskData.grade || '-'}
                             </div>
                         `;
