@@ -392,7 +392,7 @@
                                 <div class="student-card-seat-box">${rowLabel}${c}</div>
                             </div>
                             <div class="student-card-signatures">
-                                <div class="student-card-sign-title">Tanda tangan pengawas</div>
+                                <div class="student-card-sign-title"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i> Tanda tangan pengawas</div>
                                 <div class="student-card-sign-days">${supervisorSignatures}</div>
                             </div>
                             <div class="student-card-rule">Kartu hilang dikenakan denda Rp5.000.</div>
