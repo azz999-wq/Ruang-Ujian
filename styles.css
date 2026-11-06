@@ -80,14 +80,14 @@
         .student-card {
             position: relative;
             isolation: isolate;
-            min-height: 68mm;
-            border: 1.5px solid #0f172a;
+            min-height: 78mm;
+            border: 1.5px solid #102c46;
             border-radius: 8px;
             padding: 10px 12px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background: #fff;
+            background: transparent;
             break-inside: avoid;
             page-break-inside: avoid;
         }
@@ -99,7 +99,7 @@
             inset: 0 0 auto;
             height: 4px;
             border-radius: inherit;
-            background: linear-gradient(90deg, #0284c7 0 48%, #14b8a6 48% 68%, #e2e8f0 68%);
+            background: #102c46;
             pointer-events: none;
         }
 
@@ -118,7 +118,7 @@
             background-position: 70% center;
             background-repeat: no-repeat;
             background-size: 34% auto;
-            opacity: 0.06;
+            opacity: 0.04;
             pointer-events: none;
         }
 
@@ -127,7 +127,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 8px;
-            border-bottom: 2px solid #dbe3eb;
+            border-bottom: 2px solid #294861;
             padding: 2px 0 8px;
         }
 
@@ -136,17 +136,19 @@
             letter-spacing: 0.12em;
             text-transform: uppercase;
             font-weight: 800;
-            color: #0369a1;
+            color: #102c46;
         }
 
         .student-card-room {
             padding: 4px 7px;
-            border-left: 2px solid #0284c7;
+            border: 1px solid #294861;
+            border-left: 2px solid #102c46;
             border-radius: 4px;
-            background: #f1f5f9;
+            background: transparent;
             font-size: 10px;
             text-align: right;
             font-weight: 800;
+            color: #102c46;
         }
 
         .student-card-name {
@@ -164,7 +166,9 @@
             background: #ecfeff;
             font-size: 11px;
             font-weight: 700;
-            color: #0e7490;
+            color: #102c46;
+            border: 1px solid #294861;
+            background: transparent;
         }
 
         .student-card-identity {
@@ -173,7 +177,7 @@
             justify-content: space-between;
             gap: 10px;
             padding: 8px 0;
-            border-bottom: 1px dashed #cbd5e1;
+            border-bottom: 1px dashed #294861;
         }
 
         .student-card-details {
@@ -186,13 +190,13 @@
             min-width: 46px;
             min-height: 42px;
             padding: 7px 10px;
-            border: 2px solid #0284c7;
+            border: 2px solid #102c46;
             border-radius: 6px;
             text-align: center;
             font-size: 20px;
             font-weight: 900;
-            color: #075985;
-            background: #f0f9ff;
+            color: #102c46;
+            background: transparent;
         }
 
         .student-card-status {
@@ -202,23 +206,23 @@
         .student-card-signatures {
             margin-top: 6px;
             padding: 8px 9px 9px;
-            border: 1px solid #dbe3eb;
-            border-left: 3px solid #0284c7;
+            border: 1px solid #294861;
+            border-left: 3px solid #102c46;
             border-radius: 6px;
-            background: #f8fafc;
+            background: transparent;
         }
 
         .student-card-sign-title {
             font-size: 8px;
             font-weight: 800;
             margin-bottom: 7px;
-            color: #334155;
+            color: #102c46;
             text-transform: uppercase;
         }
 
         .student-card-sign-title i {
             margin-right: 4px;
-            color: #0284c7;
+            color: #102c46;
         }
 
         .student-card-sign-days {
@@ -229,31 +233,33 @@
 
         .student-card-sign-day {
             min-width: 0;
+            min-height: 18mm;
             display: flex;
             flex-direction: column;
-            gap: 9px;
-            padding: 5px 3px 4px;
-            border: 1px solid #e2e8f0;
+            justify-content: space-between;
+            gap: 0;
+            padding: 6px 4px;
+            border: 1px solid #45627a;
             border-radius: 4px;
-            background: #fff;
+            background: transparent;
             text-align: center;
             font-size: 7px;
             font-weight: 700;
-            color: #475569;
+            color: #102c46;
         }
 
         .student-card-sign-line {
             height: 1px;
-            border-bottom: 1px solid #64748b;
+            border-bottom: 1px solid #102c46;
         }
 
         .student-card-rule {
             margin-top: 6px;
             padding-top: 5px;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid #294861;
             text-align: right;
             font-size: 7px;
-            color: #475569;
+            color: #102c46;
         }
 
         @media print {
