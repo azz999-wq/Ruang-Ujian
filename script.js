@@ -468,6 +468,73 @@
             target.innerHTML = '';
         });
 
+        async function downloadDenahPdf() {
+            if (typeof html2pdf !== 'function') {
+                alert('Fitur PDF tidak dapat dimuat. Periksa koneksi internet lalu coba lagi.');
+                return;
+            }
+
+            const button = document.getElementById('download-denah-pdf');
+            const buttonLabel = button.querySelector('span');
+            const originalLabel = buttonLabel.textContent;
+            const isLandscape = config.canvasOrientation === 'landscape';
+            const pageWidth = isLandscape ? 330 : 210;
+            const pageHeight = isLandscape ? 210 : 330;
+            const exportSheet = document.getElementById('print-sheet').cloneNode(true);
+            const roomCode = String(config.roomCode || 'ruangan').trim().replace(/[^a-z0-9._-]+/gi, '-') || 'ruangan';
+
+            Object.assign(exportSheet.style, {
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                zIndex: '-1',
+                pointerEvents: 'none',
+                boxSizing: 'border-box',
+                width: `${pageWidth - 10}mm`,
+                maxWidth: 'none',
+                minHeight: `${pageHeight - 10}mm`,
+                height: 'auto',
+                aspectRatio: 'auto',
+                margin: '0',
+                padding: '10mm',
+                border: '0',
+                borderRadius: '0',
+                boxShadow: 'none',
+                background: '#ffffff'
+            });
+
+            document.body.appendChild(exportSheet);
+            button.disabled = true;
+            buttonLabel.textContent = 'Menyiapkan PDF...';
+
+            try {
+                await html2pdf().set({
+                    margin: 5,
+                    filename: `denah-ujian-${roomCode}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        backgroundColor: '#ffffff',
+                        windowWidth: Math.ceil((pageWidth - 10) / 25.4 * 96)
+                    },
+                    jsPDF: {
+                        unit: 'mm',
+                        format: [pageWidth, pageHeight],
+                        orientation: isLandscape ? 'landscape' : 'portrait'
+                    },
+                    pagebreak: { mode: ['css', 'legacy'] }
+                }).from(exportSheet).save();
+            } catch (error) {
+                console.error('Gagal membuat PDF denah:', error);
+                alert('PDF gagal dibuat. Coba muat ulang halaman lalu unduh kembali.');
+            } finally {
+                exportSheet.remove();
+                button.disabled = false;
+                buttonLabel.textContent = originalLabel;
+            }
+        }
+
         function printPage() {
             const printStyle = document.createElement('style');
             printStyle.id = 'canvas-orientation-print-style';
