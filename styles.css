@@ -75,11 +75,14 @@
             display: none;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 5mm;
+            box-sizing: border-box;
         }
 
         .student-card {
             position: relative;
             isolation: isolate;
+            min-width: 0;
+            box-sizing: border-box;
             min-height: 68mm;
             border: 1.5px solid #102c46;
             border-radius: 8px;
@@ -266,6 +269,9 @@
             body.print-student-cards-mode #student-cards-print {
                 display: grid !important;
                 width: 100%;
+                max-width: 100%;
+                margin: 0 auto;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
                 color: #0f172a;
             }
 

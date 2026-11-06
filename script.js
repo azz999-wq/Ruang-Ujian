@@ -439,7 +439,7 @@
         function prepareStudentCardsPrint() {
             const printStyle = document.createElement('style');
             printStyle.id = 'student-cards-page-style';
-            printStyle.textContent = '@page { size: 210mm 330mm; margin: 5mm; }';
+            printStyle.textContent = '@page { size: 210mm 330mm; margin: 5mm 10mm; }';
             document.head.appendChild(printStyle);
             document.body.classList.add('print-student-cards-mode');
         }
