@@ -471,9 +471,29 @@
         function printPage() {
             const printStyle = document.createElement('style');
             printStyle.id = 'canvas-orientation-print-style';
-            printStyle.textContent = config.canvasOrientation === 'landscape'
-                ? '@page { size: 330mm 210mm; }'
-                : '@page { size: 210mm 330mm; }';
+            const pageSize = config.canvasOrientation === 'landscape' ? '330mm 210mm' : '210mm 330mm';
+            printStyle.textContent = `
+                @page { size: ${pageSize}; }
+                @media print {
+                    #main-app {
+                        display: block !important;
+                        width: 100% !important;
+                        max-width: none !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    #main-app > section {
+                        width: 100% !important;
+                        margin: 0 !important;
+                    }
+                    #print-sheet {
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        min-height: 0 !important;
+                        aspect-ratio: auto !important;
+                    }
+                }
+            `;
             document.head.appendChild(printStyle);
             window.print();
         }
