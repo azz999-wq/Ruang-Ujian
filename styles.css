@@ -31,16 +31,6 @@
             aspect-ratio: 330 / 210;
         }
 
-        body.pdf-exporting .no-print {
-            display: none !important;
-        }
-
-        body.pdf-exporting #main-app,
-        body.pdf-exporting #main-app > section,
-        body.pdf-exporting #print-sheet {
-            visibility: visible !important;
-        }
-
         /* Gaya khusus cetak untuk memastikan tata letak presisi */
         @media print {
             body {
