@@ -11,7 +11,7 @@ Buka `index.html` di browser, lalu pilih **Mulai Buat Denah**. Aplikasi tidak me
 1. Atur kode dan nama ruang.
 2. Pilih orientasi kanvas **Potret** atau **Lanskap**. Orientasi yang dipilih juga digunakan saat mencetak denah.
 3. Tentukan jumlah baris dan kolom. Jumlah kolom dapat diatur dari 1 sampai 8; jumlah baris tidak dibatasi dan label berlanjut dari A-Z ke AA, AB, dan seterusnya.
-4. Aktifkan atau sembunyikan meja pengawas, lalu pilih posisinya di depan kelas: kiri, tengah, atau kanan.
+4. Aktifkan atau sembunyikan meja pengawas, pilih posisinya di depan kelas (kiri, tengah, atau kanan), dan tampilkan dengan warna biru.
 5. Buka tab **Peserta** dan masukkan satu nama per baris pada kelas yang sesuai. Untuk kelas lain, gunakan format `Nama peserta | Nama kelas`. Tambahkan `| merah` atau `| red` untuk menandai status khusus.
 6. Pilih metode pengurutan duduk, lalu klik **Terapkan Pembagian Meja**. Meja juga dapat diedit langsung dengan mengekliknya pada denah.
 
