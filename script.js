@@ -10,6 +10,7 @@
             rows: 10,
             cols: 4,
             showPengawas: true,
+            supervisorPosition: 'center',
             footerText: "SANTRI YANG TIDAK MASUK RUANGAN UJIAN HARAP KONFIRMASI BENDAHARA UJIAN & SEKRETARIS UJIAN"
         };
 
@@ -190,6 +191,7 @@
 
                 config = { ...config, ...state.config };
                 normalizeGridDimensions();
+                normalizeSupervisorPosition();
                 studentsList = Array.isArray(state.studentsList) ? state.studentsList : [];
                 gridData = state.gridData || {};
 
@@ -199,11 +201,13 @@
                 document.getElementById('input-cols').value = config.cols;
                 document.getElementById('input-footer-text').value = config.footerText;
                 document.getElementById('check-enable-pengawas').checked = !!config.showPengawas;
+                document.getElementById('select-supervisor-position').value = config.supervisorPosition;
                 document.getElementById('select-distribution-method').value = state.selectedDistributionMethod || 'zigzag';
 
                 updateHeader();
                 updateFooter();
                 togglePengawas();
+                applySupervisorPosition();
                 updateStudentTextarea();
                 renderGrid();
             } catch (error) {
@@ -258,6 +262,7 @@
 
             config = { ...config, ...imported.config };
             normalizeGridDimensions();
+            normalizeSupervisorPosition();
             studentsList = Array.isArray(imported.studentsList) ? imported.studentsList : [];
             gridData = imported.gridData || {};
 
@@ -267,10 +272,12 @@
             document.getElementById('input-cols').value = config.cols;
             document.getElementById('input-footer-text').value = config.footerText;
             document.getElementById('check-enable-pengawas').checked = !!config.showPengawas;
+            document.getElementById('select-supervisor-position').value = config.supervisorPosition;
 
             updateHeader();
             updateFooter();
             togglePengawas();
+            applySupervisorPosition();
             updateStudentTextarea();
             renderGrid();
             saveCurrentState();
@@ -289,6 +296,30 @@
         function normalizeGridDimensions() {
             config.rows = Math.max(1, Number.parseInt(config.rows, 10) || 10);
             config.cols = Math.min(8, Math.max(1, Number.parseInt(config.cols, 10) || 4));
+        }
+
+        function normalizeSupervisorPosition() {
+            if (!['left', 'center', 'right'].includes(config.supervisorPosition)) {
+                config.supervisorPosition = 'center';
+            }
+        }
+
+        function applySupervisorPosition() {
+            const wrapper = document.getElementById('pengawas-position-wrapper');
+            const positionClasses = {
+                left: 'justify-start',
+                center: 'justify-center',
+                right: 'justify-end'
+            };
+            wrapper.classList.remove('justify-start', 'justify-center', 'justify-end');
+            wrapper.classList.add(positionClasses[config.supervisorPosition]);
+        }
+
+        function updateSupervisorPosition() {
+            config.supervisorPosition = document.getElementById('select-supervisor-position').value;
+            normalizeSupervisorPosition();
+            applySupervisorPosition();
+            saveCurrentState();
         }
 
         function getRowLabel(rowNumber) {
@@ -485,10 +516,13 @@
             config.rows = 10;
             config.cols = 4;
             config.showPengawas = true;
+            config.supervisorPosition = 'center';
 
             document.getElementById('input-rows').value = 10;
             document.getElementById('input-cols').value = 4;
             document.getElementById('check-enable-pengawas').checked = true;
+            document.getElementById('select-supervisor-position').value = config.supervisorPosition;
+            applySupervisorPosition();
 
             // Indeks peserta per kursi; null menandai kursi kosong.
             const sampleSeating = [
