@@ -302,12 +302,13 @@
             return label;
         }
 
-        function buildStudentCardsHTML() {
+        function buildStudentCardsHTML(selectedKey = null) {
             const cards = [];
             for (let r = 1; r <= config.rows; r++) {
                 for (let c = 1; c <= config.cols; c++) {
                     const key = `${r}-${c}`;
                     const deskData = gridData[key] || {};
+                    if (selectedKey && key !== selectedKey) continue;
                     if (deskData.empty || (!deskData.name && !deskData.grade)) continue;
 
                     const rowLabel = getRowLabel(r);
@@ -345,6 +346,52 @@
             }
 
             return cards.join('');
+        }
+
+        function getStudentCardOptionsHTML() {
+            const options = [];
+            for (let r = 1; r <= config.rows; r++) {
+                for (let c = 1; c <= config.cols; c++) {
+                    const key = `${r}-${c}`;
+                    const deskData = gridData[key] || {};
+                    if (deskData.empty || (!deskData.name && !deskData.grade)) continue;
+
+                    const label = `${getRowLabel(r)}${c} - ${deskData.name || '-'} (${deskData.grade || '-'})`;
+                    options.push(`<option value="${key}">${escapeHTML(label)}</option>`);
+                }
+            }
+            return options.join('');
+        }
+
+        function openSingleStudentCardModal() {
+            const options = getStudentCardOptionsHTML();
+            if (!options) {
+                alert('Belum ada peserta yang memiliki tempat duduk.');
+                return;
+            }
+
+            const select = document.getElementById('single-student-card-select');
+            select.innerHTML = options;
+            document.getElementById('single-student-card-modal').classList.remove('hidden');
+            select.focus();
+        }
+
+        function closeSingleStudentCardModal() {
+            document.getElementById('single-student-card-modal').classList.add('hidden');
+        }
+
+        function printSelectedStudentCard() {
+            const selectedKey = document.getElementById('single-student-card-select').value;
+            const target = document.getElementById('student-cards-print');
+            target.innerHTML = buildStudentCardsHTML(selectedKey);
+            if (!target.childElementCount) {
+                alert('Kartu peserta tidak ditemukan.');
+                return;
+            }
+
+            closeSingleStudentCardModal();
+            document.body.classList.add('print-student-cards-mode');
+            window.print();
         }
 
         function printStudentCards() {

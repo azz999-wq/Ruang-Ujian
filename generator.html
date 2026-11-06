@@ -74,6 +74,10 @@
                     <i class="fa-solid fa-id-card"></i>
                     <span class="hidden sm:inline">Kartu Peserta</span>
                 </button>
+                <button onclick="openSingleStudentCardModal()" class="px-3 py-1.5 text-xs sm:text-sm font-medium bg-cyan-950/40 hover:bg-cyan-900/60 text-cyan-300 rounded-lg transition border border-cyan-800/50 flex items-center gap-2">
+                    <i class="fa-regular fa-id-card"></i>
+                    <span class="hidden sm:inline">Kartu Satuan</span>
+                </button>
             </div>
         </div>
     </header>
@@ -303,6 +307,23 @@
     </main>
 
     <div id="student-cards-print" class="student-cards-print"></div>
+
+    <div id="single-student-card-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 border border-slate-200" role="dialog" aria-modal="true" aria-labelledby="single-student-card-title">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="single-student-card-title" class="font-bold text-slate-900 text-lg">Kartu Satuan</h3>
+                <button onclick="closeSingleStudentCardModal()" class="text-slate-400 hover:text-slate-600 text-lg" aria-label="Tutup">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <label for="single-student-card-select" class="block text-xs font-semibold text-slate-600 mb-1">Peserta</label>
+            <select id="single-student-card-select" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none"></select>
+            <div class="flex justify-end gap-2 mt-5">
+                <button onclick="closeSingleStudentCardModal()" class="px-4 py-2 border border-slate-300 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50">Batal</button>
+                <button onclick="printSelectedStudentCard()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-lg shadow">Cetak / Simpan PDF</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Edit Meja Single -->
     <div id="edit-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
