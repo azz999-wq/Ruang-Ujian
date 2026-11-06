@@ -10,12 +10,18 @@
                 display: none !important;
             }
             .print-area {
+                display: block !important;
                 width: 100% !important;
                 max-width: 100% !important;
                 margin: 0 !important;
                 padding: 10mm !important;
+                min-height: 0 !important;
                 box-shadow: none !important;
                 border: none !important;
+            }
+            .denah-row {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
             }
             .page-break {
                 page-break-after: always;

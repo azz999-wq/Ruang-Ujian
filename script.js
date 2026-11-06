@@ -189,6 +189,7 @@
                 }
 
                 config = { ...config, ...state.config };
+                normalizeGridDimensions();
                 studentsList = Array.isArray(state.studentsList) ? state.studentsList : [];
                 gridData = state.gridData || {};
 
@@ -256,6 +257,7 @@
             }
 
             config = { ...config, ...imported.config };
+            normalizeGridDimensions();
             studentsList = Array.isArray(imported.studentsList) ? imported.studentsList : [];
             gridData = imported.gridData || {};
 
@@ -284,6 +286,22 @@
             })[character]);
         }
 
+        function normalizeGridDimensions() {
+            config.rows = Math.max(1, Number.parseInt(config.rows, 10) || 10);
+            config.cols = Math.min(8, Math.max(1, Number.parseInt(config.cols, 10) || 4));
+        }
+
+        function getRowLabel(rowNumber) {
+            let label = '';
+            let remaining = rowNumber;
+            while (remaining > 0) {
+                remaining--;
+                label = String.fromCharCode(65 + remaining % 26) + label;
+                remaining = Math.floor(remaining / 26);
+            }
+            return label;
+        }
+
         function buildStudentCardsHTML() {
             const cards = [];
             for (let r = 1; r <= config.rows; r++) {
@@ -292,7 +310,7 @@
                     const deskData = gridData[key] || {};
                     if (deskData.empty || (!deskData.name && !deskData.grade)) continue;
 
-                    const rowLabel = String.fromCharCode(64 + r);
+                    const rowLabel = getRowLabel(r);
                     const status = deskData.isRed
                         ? '<div class="student-card-grade student-card-status">STATUS KHUSUS</div>'
                         : '';
@@ -517,6 +535,9 @@
         function generateGrid() {
             config.rows = parseInt(document.getElementById('input-rows').value) || 10;
             config.cols = parseInt(document.getElementById('input-cols').value) || 4;
+            normalizeGridDimensions();
+            document.getElementById('input-rows').value = config.rows;
+            document.getElementById('input-cols').value = config.cols;
             renderGrid();
             saveCurrentState();
         }
@@ -614,10 +635,10 @@
 
             // Render Tiap Baris (A, B, C...)
             for (let r = 1; r <= config.rows; r++) {
-                const rowChar = String.fromCharCode(64 + r); // 1 = A, 2 = B ...
+                const rowChar = getRowLabel(r);
                 
                 const rowDiv = document.createElement('div');
-                rowDiv.className = "flex items-center gap-2 sm:gap-3";
+                rowDiv.className = "denah-row flex items-center gap-2 sm:gap-3";
 
                 // Label Abjad Baris
                 const rowLabel = document.createElement('div');
