@@ -707,12 +707,72 @@
             saveCurrentState();
         }
 
+        function createSeparatedRandomPool() {
+            const seatCount = Math.min(studentsList.length, config.rows * config.cols);
+            const grouped = {};
+
+            studentsList.slice(0, seatCount).forEach(student => {
+                const grade = student.grade.trim().toUpperCase();
+                if (!grouped[grade]) grouped[grade] = [];
+                grouped[grade].push(student);
+            });
+
+            const grades = Object.keys(grouped);
+            const maxAttempts = Math.max(100, seatCount * 8);
+
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                const remaining = {};
+                grades.forEach(grade => {
+                    remaining[grade] = [...grouped[grade]];
+                    for (let index = remaining[grade].length - 1; index > 0; index--) {
+                        const randomIndex = Math.floor(Math.random() * (index + 1));
+                        [remaining[grade][index], remaining[grade][randomIndex]] = [
+                            remaining[grade][randomIndex],
+                            remaining[grade][index]
+                        ];
+                    }
+                });
+
+                const seatGrades = Array(config.rows * config.cols).fill('');
+                const pool = [];
+                let failed = false;
+
+                for (let index = 0; index < seatCount; index++) {
+                    const row = Math.floor(index / config.cols);
+                    const col = index % config.cols;
+                    const leftGrade = col > 0 ? seatGrades[index - 1] : '';
+                    const upperGrade = row > 0 ? seatGrades[index - config.cols] : '';
+                    const candidates = grades.filter(grade =>
+                        remaining[grade].length > 0 && grade !== leftGrade && grade !== upperGrade
+                    );
+
+                    if (candidates.length === 0) {
+                        failed = true;
+                        break;
+                    }
+
+                    const availableStudents = candidates.reduce((total, grade) => total + remaining[grade].length, 0);
+                    let selection = Math.random() * availableStudents;
+                    const grade = candidates.find(candidate => {
+                        selection -= remaining[candidate].length;
+                        return selection < 0;
+                    });
+                    seatGrades[index] = grade;
+                    pool.push(remaining[grade].pop());
+                }
+
+                if (!failed) return pool;
+            }
+
+            return null;
+        }
+
         // Otomatis Mendistribusikan Peserta ke Meja
         function autoDistribute() {
             const method = document.getElementById('select-distribution-method').value;
-            gridData = {};
 
             if (studentsList.length === 0) {
+                gridData = {};
                 renderGrid();
                 saveCurrentState();
                 return;
@@ -720,29 +780,15 @@
 
             let pool = [...studentsList];
 
-            // Jika metode Zig-zag, kita kelompokkan berdasarkan kelas lalu ambil bergantian
             if (method === 'zigzag') {
-                const grouped = {};
-                pool.forEach(s => {
-                    const g = s.grade.toUpperCase();
-                    if (!grouped[g]) grouped[g] = [];
-                    grouped[g].push(s);
-                });
-
-                const grades = Object.keys(grouped);
-                const interleave = [];
-                let maxLength = Math.max(...Object.values(grouped).map(arr => arr.length));
-
-                for (let i = 0; i < maxLength; i++) {
-                    grades.forEach(g => {
-                        if (grouped[g][i]) {
-                            interleave.push(grouped[g][i]);
-                        }
-                    });
+                pool = createSeparatedRandomPool();
+                if (!pool) {
+                    alert('Belum ditemukan susunan tanpa kelas yang bersebelahan. Coba tambah jumlah baris atau kolom, atau pilih metode lain.');
+                    return;
                 }
-                pool = interleave;
             }
 
+            gridData = {};
             let studentIdx = 0;
 
             if (method === 'snake') {
