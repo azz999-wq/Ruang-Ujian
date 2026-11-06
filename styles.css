@@ -25,15 +25,6 @@
             box-shadow: 0 1px 2px rgb(15 23 42 / 0.15);
         }
 
-        #main-app.landscape-mode {
-            grid-template-columns: minmax(0, 1fr) !important;
-        }
-
-        #main-app.landscape-mode > aside,
-        #main-app.landscape-mode > section {
-            grid-column: 1 / -1 !important;
-        }
-
         #main-app.landscape-mode #print-sheet {
             max-width: min(330mm, calc(100vw - 3rem));
             min-height: auto !important;
