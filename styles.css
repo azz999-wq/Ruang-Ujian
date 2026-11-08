@@ -46,6 +46,119 @@
             outline-offset: 2px;
         }
 
+        .school-type-tabs {
+            display: flex;
+            gap: 5px;
+            margin: 0 0 12px;
+            padding: 3px;
+            border-bottom: 1px solid #d5e0dc;
+        }
+
+        .school-type-tabs button {
+            min-width: 62px;
+            min-height: 31px;
+            padding: 0 12px;
+            border: 0;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            color: #64746e;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .school-type-tabs button[aria-pressed="true"] {
+            border-bottom-color: #e77451;
+            color: #17332f;
+        }
+
+        .school-type-tabs button:focus-visible,
+        .smk-major-add-button:focus-visible,
+        .smk-major-remove:focus-visible {
+            outline: 2px solid #0284c7;
+            outline-offset: 2px;
+        }
+
+        .smk-major-add-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .smk-major-add-button {
+            min-height: 36px;
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 0 12px;
+            border: 0;
+            border-radius: 5px;
+            background: #0a765f;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .smk-major-add-button:hover {
+            background: #075548;
+        }
+
+        .smk-major-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .smk-major-empty {
+            margin: 8px 0 0;
+            padding: 12px;
+            border: 1px dashed #cbd8d2;
+            border-radius: 5px;
+            color: #73827d;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .smk-major-section {
+            padding-top: 10px;
+            border-top: 1px solid #dbe4e0;
+        }
+
+        .smk-major-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: #17332f;
+            font-size: 12px;
+        }
+
+        .smk-major-remove {
+            width: 30px;
+            height: 30px;
+            display: grid;
+            flex: 0 0 30px;
+            place-items: center;
+            border: 1px solid #f0d7d1;
+            border-radius: 5px;
+            background: #fff;
+            color: #bb6047;
+            cursor: pointer;
+        }
+
+        .smk-major-remove:hover {
+            background: #fff1ed;
+        }
+
+        .smk-major-grade-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
         .print-dropdown {
             position: relative;
             flex: 0 0 auto;

@@ -227,30 +227,44 @@
                                 <i class="fa-solid fa-book-open" aria-hidden="true"></i> Kelas Pengajian
                             </button>
                         </div>
+                        <div class="school-type-tabs" data-student-group="school" role="group" aria-label="Jenis sekolah">
+                            <button type="button" data-school-type-button="smp" aria-pressed="true" onclick="switchSchoolType('smp')">SMP</button>
+                            <button type="button" data-school-type-button="sma" aria-pressed="false" onclick="switchSchoolType('sma')">SMA</button>
+                            <button type="button" data-school-type-button="smk" aria-pressed="false" onclick="switchSchoolType('smk')">SMK</button>
+                        </div>
                         <div class="grid grid-cols-2 gap-3">
-                            <div data-student-group="school">
+                            <div data-student-group="school" data-school-type="smp">
                                 <label for="students-smp-7" class="block text-[11px] font-semibold text-slate-600 mb-1">7 SMP</label>
                                 <textarea id="students-smp-7" data-student-grade="7 SMP" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div data-student-group="school">
+                            <div data-student-group="school" data-school-type="smp">
                                 <label for="students-smp-8" class="block text-[11px] font-semibold text-slate-600 mb-1">8 SMP</label>
                                 <textarea id="students-smp-8" data-student-grade="8 SMP" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div data-student-group="school">
+                            <div data-student-group="school" data-school-type="smp">
                                 <label for="students-smp-9" class="block text-[11px] font-semibold text-slate-600 mb-1">9 SMP</label>
                                 <textarea id="students-smp-9" data-student-grade="9 SMP" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div data-student-group="school">
-                                <label for="students-sma-smk-10" class="block text-[11px] font-semibold text-slate-600 mb-1">10 SMA/SMK</label>
-                                <textarea id="students-sma-smk-10" data-student-grade="10 SMA/SMK" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
+                            <div class="hidden" data-student-group="school" data-school-type="sma">
+                                <label for="students-sma-10" class="block text-[11px] font-semibold text-slate-600 mb-1">10 SMA</label>
+                                <textarea id="students-sma-10" data-student-grade="10 SMA" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div data-student-group="school">
-                                <label for="students-sma-smk-11" class="block text-[11px] font-semibold text-slate-600 mb-1">11 SMA/SMK</label>
-                                <textarea id="students-sma-smk-11" data-student-grade="11 SMA/SMK" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
+                            <div class="hidden" data-student-group="school" data-school-type="sma">
+                                <label for="students-sma-11" class="block text-[11px] font-semibold text-slate-600 mb-1">11 SMA</label>
+                                <textarea id="students-sma-11" data-student-grade="11 SMA" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div data-student-group="school">
-                                <label for="students-sma-smk-12" class="block text-[11px] font-semibold text-slate-600 mb-1">12 SMA/SMK</label>
-                                <textarea id="students-sma-smk-12" data-student-grade="12 SMA/SMK" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
+                            <div class="hidden" data-student-group="school" data-school-type="sma">
+                                <label for="students-sma-12" class="block text-[11px] font-semibold text-slate-600 mb-1">12 SMA</label>
+                                <textarea id="students-sma-12" data-student-grade="12 SMA" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
+                            </div>
+                            <div id="smk-jurusan-panel" class="hidden col-span-2" data-student-group="school" data-school-type="smk">
+                                <label for="smk-major-input" class="block text-[11px] font-semibold text-slate-600 mb-1">Tambah jurusan SMK</label>
+                                <div class="smk-major-add-row">
+                                    <input id="smk-major-input" type="text" placeholder="Contoh: TKJ, Akuntansi" class="min-w-0 flex-1 px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <button type="button" onclick="addSMKMajor()" class="smk-major-add-button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Tambah</button>
+                                </div>
+                                <p id="smk-major-message" class="mt-1 text-[10px] text-slate-500" role="status">Setiap jurusan memiliki input kelas 10, 11, dan 12.</p>
+                                <div id="smk-major-list" class="smk-major-list"></div>
                             </div>
                             <div class="hidden" data-student-group="religious">
                                 <label for="students-SP" class="block text-[11px] font-semibold text-slate-600 mb-1">SP</label>

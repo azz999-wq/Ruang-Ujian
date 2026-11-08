@@ -17,6 +17,8 @@
 
         // Data Peserta (Disimpan dalam Array of Object)
         let studentsList = [];
+        let smkMajors = [];
+        let activeSchoolType = 'smp';
         // Map penempatan di meja: key "R-C" (cth: "1-1" untuk A1, "7-3" untuk G3)
         let gridData = {};
         let singleStudentCardOptions = [];
@@ -68,6 +70,7 @@
             const state = {
                 config,
                 studentsList,
+                smkMajors,
                 gridData,
                 selectedDistributionMethod: document.getElementById('select-distribution-method').value
             };
@@ -196,6 +199,9 @@
                 normalizeCanvasOrientation();
                 normalizeSupervisorPosition();
                 studentsList = Array.isArray(state.studentsList) ? state.studentsList : [];
+                smkMajors = Array.isArray(state.smkMajors)
+                    ? [...new Set(state.smkMajors.filter(major => typeof major === 'string').map(major => major.trim()).filter(Boolean))]
+                    : [];
                 gridData = state.gridData || {};
 
                 document.getElementById('input-room-code').value = config.roomCode;
@@ -212,6 +218,7 @@
                 togglePengawas();
                 applyCanvasOrientation();
                 applySupervisorPosition();
+                renderSMKMajors();
                 updateStudentTextarea();
                 renderGrid();
             } catch (error) {
@@ -225,6 +232,7 @@
             const state = {
                 config,
                 studentsList,
+                smkMajors,
                 gridData,
                 exportedAt: new Date().toISOString()
             };
@@ -269,6 +277,9 @@
             normalizeCanvasOrientation();
             normalizeSupervisorPosition();
             studentsList = Array.isArray(imported.studentsList) ? imported.studentsList : [];
+            smkMajors = Array.isArray(imported.smkMajors)
+                ? [...new Set(imported.smkMajors.filter(major => typeof major === 'string').map(major => major.trim()).filter(Boolean))]
+                : [];
             gridData = imported.gridData || {};
 
             document.getElementById('input-room-code').value = config.roomCode;
@@ -284,6 +295,7 @@
             togglePengawas();
             applyCanvasOrientation();
             applySupervisorPosition();
+            renderSMKMajors();
             updateStudentTextarea();
             renderGrid();
             saveCurrentState();
@@ -575,7 +587,8 @@
         function switchStudentGroup(group) {
             const showSchool = group === 'school';
             document.querySelectorAll('[data-student-group="school"]').forEach(inputGroup => {
-                inputGroup.classList.toggle('hidden', !showSchool);
+                const isInactiveSchoolType = inputGroup.dataset.schoolType && inputGroup.dataset.schoolType !== activeSchoolType;
+                inputGroup.classList.toggle('hidden', !showSchool || isInactiveSchoolType);
             });
             document.querySelectorAll('[data-student-group="religious"]').forEach(inputGroup => {
                 inputGroup.classList.toggle('hidden', showSchool);
@@ -584,13 +597,128 @@
             document.getElementById('student-group-religious-button').setAttribute('aria-pressed', String(!showSchool));
         }
 
+        function switchSchoolType(type) {
+            activeSchoolType = type;
+            const isSchoolGroupActive = document.getElementById('student-group-school-button').getAttribute('aria-pressed') === 'true';
+            document.querySelectorAll('[data-school-type]').forEach(panel => {
+                panel.classList.toggle('hidden', !isSchoolGroupActive || panel.dataset.schoolType !== type);
+            });
+            document.querySelectorAll('[data-school-type-button]').forEach(button => {
+                button.setAttribute('aria-pressed', String(button.dataset.schoolTypeButton === type));
+            });
+            if (type === 'smk') {
+                renderSMKMajors();
+            }
+        }
+
+        function renderSMKMajors() {
+            const container = document.getElementById('smk-major-list');
+            if (!container) return;
+
+            const previousValues = new Map(Array.from(
+                container.querySelectorAll('textarea[data-student-grade]'),
+                input => [input.dataset.studentGrade.toUpperCase(), input.value]
+            ));
+
+            container.innerHTML = '';
+            if (smkMajors.length === 0) {
+                container.innerHTML = '<p class="smk-major-empty">Belum ada jurusan. Tambahkan jurusan untuk mulai mengisi peserta.</p>';
+                return;
+            }
+
+            smkMajors.forEach((major, majorIndex) => {
+                const section = document.createElement('section');
+                section.className = 'smk-major-section';
+                section.dataset.smkMajor = major;
+                section.innerHTML = `
+                    <div class="smk-major-heading">
+                        <strong>${escapeHTML(major)}</strong>
+                        <button type="button" class="smk-major-remove" onclick="removeSMKMajor(${majorIndex})" aria-label="Hapus jurusan ${escapeHTML(major)}" title="Hapus jurusan">
+                            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="smk-major-grade-grid">
+                        ${[10, 11, 12].map(level => {
+                            const grade = `${level} SMK - ${major}`;
+                            const inputId = `students-smk-${majorIndex}-${level}`;
+                            return `<div>
+                                <label for="${inputId}" class="block text-[11px] font-semibold text-slate-600 mb-1">Kelas ${level}</label>
+                                <textarea id="${inputId}" data-student-grade="${escapeHTML(grade)}" data-smk-major="${escapeHTML(major)}" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                `;
+                container.appendChild(section);
+
+                section.querySelectorAll('textarea[data-student-grade]').forEach(input => {
+                    const grade = input.dataset.studentGrade;
+                    const previousValue = previousValues.get(grade.toUpperCase());
+                    input.value = previousValue !== undefined
+                        ? previousValue
+                        : studentsList
+                            .filter(student => String(student.grade || '').trim().toUpperCase() === grade.toUpperCase())
+                            .map(student => `${student.name}${student.isRed ? ' | merah' : ''}`)
+                            .join('\n');
+                });
+            });
+        }
+
+        function addSMKMajor() {
+            const input = document.getElementById('smk-major-input');
+            const message = document.getElementById('smk-major-message');
+            const major = input.value.trim().replace(/\s+/g, ' ');
+            if (!major) {
+                message.textContent = 'Masukkan nama jurusan terlebih dahulu.';
+                input.focus();
+                return;
+            }
+            if (smkMajors.some(existingMajor => existingMajor.toUpperCase() === major.toUpperCase())) {
+                message.textContent = 'Jurusan tersebut sudah ada.';
+                input.focus();
+                return;
+            }
+
+            smkMajors.push(major);
+            input.value = '';
+            message.textContent = `${major} ditambahkan. Isi peserta menurut tingkat kelas.`;
+            renderSMKMajors();
+            saveCurrentState();
+        }
+
+        function removeSMKMajor(majorIndex) {
+            const major = smkMajors[majorIndex];
+            const section = Array.from(document.querySelectorAll('.smk-major-section'))
+                .find(majorSection => majorSection.dataset.smkMajor === major);
+            const otherInput = document.getElementById('students-other');
+            const movedLines = [];
+
+            section?.querySelectorAll('textarea[data-student-grade]').forEach(input => {
+                input.value.split('\n').forEach(line => {
+                    const parts = line.trim().split('|').map(part => part.trim());
+                    const name = parts[0];
+                    if (!name) return;
+                    const status = parts.slice(1).find(part => ['merah', 'red'].includes(part.toLowerCase()));
+                    movedLines.push(`${name} | ${input.dataset.studentGrade}${status ? ` | ${status}` : ''}`);
+                });
+            });
+
+            const existingLines = otherInput.value.split('\n').map(line => line.trim()).filter(Boolean);
+            otherInput.value = [...existingLines, ...movedLines].join('\n');
+            smkMajors.splice(majorIndex, 1);
+            renderSMKMajors();
+            document.getElementById('smk-major-message').textContent = movedLines.length
+                ? `${major} dihapus; isian peserta dipindahkan ke Kelas lainnya.`
+                : `${major} dihapus.`;
+            saveCurrentState();
+        }
+
         const STUDENT_CLASSES = [
             '7 SMP',
             '8 SMP',
             '9 SMP',
-            '10 SMA/SMK',
-            '11 SMA/SMK',
-            '12 SMA/SMK',
+            '10 SMA',
+            '11 SMA',
+            '12 SMA',
             'SP',
             '1 IBTIDA',
             '2 IBTIDA',
@@ -611,7 +739,8 @@
                     .join('\n');
             });
 
-            const knownGrades = new Set(STUDENT_CLASSES.map(grade => grade.toUpperCase()));
+            const smkGrades = smkMajors.flatMap(major => [10, 11, 12].map(level => `${level} SMK - ${major}`));
+            const knownGrades = new Set([...STUDENT_CLASSES, ...smkGrades].map(grade => grade.toUpperCase()));
             document.getElementById('students-other').value = studentsList
                 .filter(student => !knownGrades.has(String(student.grade || '').trim().toUpperCase()))
                 .map(student => `${student.name} | ${student.grade}${student.isRed ? ' | merah' : ''}`)
