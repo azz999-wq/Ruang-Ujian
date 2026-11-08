@@ -1,7 +1,14 @@
 
         const STORAGE_KEY = 'denah-ujian-pro-state-v1';
         const STUDENT_CARD_LOGO_STORAGE_KEY = 'denah-ujian-student-card-logo-v1';
+        const DEFAULT_STUDENT_CARD_SETTINGS = {
+            title: 'Kartu Peserta Ujian',
+            examDays: 5,
+            signatureTitle: 'Tanda tangan pengawas',
+            note: 'Kartu hilang dikenakan denda Rp5.000.'
+        };
         let studentCardLogo = '';
+        let studentCardSettings = { ...DEFAULT_STUDENT_CARD_SETTINGS };
 
         // Data State Utama
         let config = {
@@ -71,6 +78,7 @@
                 config,
                 studentsList,
                 smkMajors,
+                studentCardSettings,
                 gridData,
                 selectedDistributionMethod: document.getElementById('select-distribution-method').value
             };
@@ -202,6 +210,7 @@
                 smkMajors = Array.isArray(state.smkMajors)
                     ? [...new Set(state.smkMajors.filter(major => typeof major === 'string').map(major => major.trim()).filter(Boolean))]
                     : [];
+                studentCardSettings = normalizeStudentCardSettings(state.studentCardSettings);
                 gridData = state.gridData || {};
 
                 document.getElementById('input-room-code').value = config.roomCode;
@@ -233,6 +242,7 @@
                 config,
                 studentsList,
                 smkMajors,
+                studentCardSettings,
                 gridData,
                 exportedAt: new Date().toISOString()
             };
@@ -280,6 +290,7 @@
             smkMajors = Array.isArray(imported.smkMajors)
                 ? [...new Set(imported.smkMajors.filter(major => typeof major === 'string').map(major => major.trim()).filter(Boolean))]
                 : [];
+            studentCardSettings = normalizeStudentCardSettings(imported.studentCardSettings);
             gridData = imported.gridData || {};
 
             document.getElementById('input-room-code').value = config.roomCode;
@@ -384,7 +395,8 @@
                     const status = deskData.isRed
                         ? '<div class="student-card-grade student-card-status">STATUS KHUSUS</div>'
                         : '';
-                    const supervisorSignatures = Array.from({ length: 5 }, (_, dayIndex) => `
+                    const examDays = studentCardSettings.examDays;
+                    const supervisorSignatures = Array.from({ length: examDays }, (_, dayIndex) => `
                         <div class="student-card-sign-day">
                             <span>Hari ${dayIndex + 1}</span>
                             <span class="student-card-sign-line"></span>
@@ -393,7 +405,7 @@
                     cards.push(`
                         <article class="student-card"${studentCardLogo ? ` style="--student-card-watermark: url('${studentCardLogo}')"` : ''}>
                             <div class="student-card-header">
-                                <div class="student-card-title">Kartu Peserta Ujian</div>
+                                <div class="student-card-title">${escapeHTML(studentCardSettings.title)}</div>
                                 <div class="student-card-room">${escapeHTML(config.roomCode)}<br>${escapeHTML(config.roomName)}</div>
                             </div>
                             <div class="student-card-identity">
@@ -405,16 +417,71 @@
                                 <div class="student-card-seat-box">${rowLabel}${c}</div>
                             </div>
                             <div class="student-card-signatures">
-                                <div class="student-card-sign-title"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i> Tanda tangan pengawas</div>
-                                <div class="student-card-sign-days">${supervisorSignatures}</div>
+                                <div class="student-card-sign-title"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i> ${escapeHTML(studentCardSettings.signatureTitle)}</div>
+                                <div class="student-card-sign-days" style="--student-card-day-count: ${examDays}">${supervisorSignatures}</div>
                             </div>
-                            <div class="student-card-rule">Kartu hilang dikenakan denda Rp5.000.</div>
+                            ${studentCardSettings.note ? `<div class="student-card-rule">${escapeHTML(studentCardSettings.note)}</div>` : ''}
                         </article>
                     `);
                 }
             }
 
             return cards.join('');
+        }
+
+        function normalizeStudentCardSettings(settings = {}) {
+            const examDays = Number.parseInt(settings.examDays, 10);
+            return {
+                title: String(settings.title ?? DEFAULT_STUDENT_CARD_SETTINGS.title).trim().slice(0, 48) || DEFAULT_STUDENT_CARD_SETTINGS.title,
+                examDays: Number.isFinite(examDays) ? Math.min(10, Math.max(1, examDays)) : DEFAULT_STUDENT_CARD_SETTINGS.examDays,
+                signatureTitle: String(settings.signatureTitle ?? DEFAULT_STUDENT_CARD_SETTINGS.signatureTitle).trim().slice(0, 48) || DEFAULT_STUDENT_CARD_SETTINGS.signatureTitle,
+                note: String(settings.note ?? DEFAULT_STUDENT_CARD_SETTINGS.note).trim().slice(0, 100)
+            };
+        }
+
+        function openStudentCardSettingsModal() {
+            document.getElementById('student-card-title-input').value = studentCardSettings.title;
+            document.getElementById('student-card-days-input').value = studentCardSettings.examDays;
+            document.getElementById('student-card-signature-title-input').value = studentCardSettings.signatureTitle;
+            document.getElementById('student-card-note-input').value = studentCardSettings.note;
+            updateStudentCardSettingsPreview();
+            document.getElementById('student-card-settings-modal').classList.remove('hidden');
+            document.getElementById('student-card-title-input').focus();
+        }
+
+        function closeStudentCardSettingsModal() {
+            document.getElementById('student-card-settings-modal').classList.add('hidden');
+        }
+
+        function updateStudentCardSettingsPreview() {
+            const settings = normalizeStudentCardSettings({
+                title: document.getElementById('student-card-title-input').value,
+                examDays: document.getElementById('student-card-days-input').value,
+                signatureTitle: document.getElementById('student-card-signature-title-input').value,
+                note: document.getElementById('student-card-note-input').value
+            });
+            document.getElementById('student-card-preview-title').textContent = settings.title;
+            document.getElementById('student-card-preview-sign-title').textContent = settings.signatureTitle;
+            document.getElementById('student-card-preview-note').textContent = settings.note;
+
+            const daysPreview = document.getElementById('student-card-preview-days');
+            daysPreview.style.setProperty('--preview-day-count', settings.examDays);
+            daysPreview.replaceChildren(...Array.from({ length: settings.examDays }, (_, dayIndex) => {
+                const day = document.createElement('span');
+                day.textContent = `Hari ${dayIndex + 1}`;
+                return day;
+            }));
+        }
+
+        function saveStudentCardSettings() {
+            studentCardSettings = normalizeStudentCardSettings({
+                title: document.getElementById('student-card-title-input').value,
+                examDays: document.getElementById('student-card-days-input').value,
+                signatureTitle: document.getElementById('student-card-signature-title-input').value,
+                note: document.getElementById('student-card-note-input').value
+            });
+            saveCurrentState();
+            closeStudentCardSettingsModal();
         }
 
         function getStudentCardOptions() {

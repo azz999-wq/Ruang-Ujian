@@ -89,6 +89,11 @@
                             <span class="print-option-copy"><strong>Kartu Satuan</strong><small>Cari dan cetak satu peserta</small></span>
                             <i class="fa-solid fa-chevron-right print-option-arrow" aria-hidden="true"></i>
                         </button>
+                        <button onclick="this.closest('details').open = false; openStudentCardSettingsModal()" class="print-dropdown-option">
+                            <span class="print-option-icon print-option-cards"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i></span>
+                            <span class="print-option-copy"><strong>Edit Kartu Peserta</strong><small>Atur hari ujian dan teks kartu</small></span>
+                            <i class="fa-solid fa-chevron-right print-option-arrow" aria-hidden="true"></i>
+                        </button>
                     </div>
                 </details>
             </div>
@@ -400,6 +405,51 @@
             <div class="flex justify-end gap-2 mt-5">
                 <button onclick="closeSingleStudentCardModal()" class="px-4 py-2 border border-slate-300 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50">Batal</button>
                 <button id="single-student-card-print-button" onclick="printSelectedStudentCard()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-lg shadow disabled:opacity-50" disabled>Cetak / Simpan PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="student-card-settings-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 no-print">
+        <div class="student-card-settings-dialog" role="dialog" aria-modal="true" aria-labelledby="student-card-settings-title">
+            <div class="student-card-settings-header">
+                <div>
+                    <span class="student-card-settings-kicker">PENGATURAN CETAK</span>
+                    <h3 id="student-card-settings-title">Edit Kartu Peserta</h3>
+                </div>
+                <button type="button" onclick="closeStudentCardSettingsModal()" class="student-card-settings-close" aria-label="Tutup">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="student-card-settings-fields">
+                <div>
+                    <label for="student-card-title-input">Judul kartu</label>
+                    <input id="student-card-title-input" type="text" maxlength="48" oninput="updateStudentCardSettingsPreview()">
+                </div>
+                <div>
+                    <label for="student-card-days-input">Jumlah hari ujian</label>
+                    <input id="student-card-days-input" type="number" min="1" max="10" step="1" oninput="updateStudentCardSettingsPreview()">
+                </div>
+                <div>
+                    <label for="student-card-signature-title-input">Judul area tanda tangan</label>
+                    <input id="student-card-signature-title-input" type="text" maxlength="48" oninput="updateStudentCardSettingsPreview()">
+                </div>
+                <div>
+                    <label for="student-card-note-input">Catatan kartu</label>
+                    <textarea id="student-card-note-input" rows="2" maxlength="100" oninput="updateStudentCardSettingsPreview()"></textarea>
+                </div>
+            </div>
+            <div class="student-card-settings-preview-wrap">
+                <span class="student-card-settings-kicker">PRATINJAU</span>
+                <div class="student-card-settings-preview">
+                    <strong id="student-card-preview-title"></strong>
+                    <div class="student-card-preview-sign-title" id="student-card-preview-sign-title"></div>
+                    <div class="student-card-preview-days" id="student-card-preview-days"></div>
+                    <small id="student-card-preview-note"></small>
+                </div>
+            </div>
+            <div class="student-card-settings-actions">
+                <button type="button" onclick="closeStudentCardSettingsModal()" class="student-card-settings-cancel">Batal</button>
+                <button type="button" onclick="saveStudentCardSettings()" class="student-card-settings-save"><i class="fa-solid fa-check" aria-hidden="true"></i> Simpan</button>
             </div>
         </div>
     </div>

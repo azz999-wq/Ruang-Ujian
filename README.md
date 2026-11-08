@@ -18,7 +18,7 @@ Buka `https://azz999-wq.github.io/Ruang-Ujian` di browser, lalu pilih **Mulai bu
 ## Cetak dan Simpan
 
 - Tombol **Cetak** di header generator membuka pilihan untuk mencetak denah, semua kartu peserta, atau satu kartu peserta. **Cetak Denah** membuka dialog cetak browser dengan orientasi F4 sesuai mode kanvas. Untuk menyimpan denah sebagai PDF, pilih **Save as PDF** pada dialog tersebut.
-- **Kartu Peserta** mencetak hingga delapan kartu per halaman F4 dalam tata letak dua kolom, dengan margin samping 10 mm agar tidak terpotong. Setiap kartu memuat kelas, nomor kursi, area tanda tangan pengawas untuk lima hari, dan watermark logo opsional.
+- **Kartu Peserta** mencetak hingga delapan kartu per halaman F4 dalam tata letak dua kolom, dengan margin samping 10 mm agar tidak terpotong. Menu **Edit Kartu Peserta** mengatur judul kartu, jumlah hari ujian (1-10), judul tanda tangan, dan catatan kartu; pengaturan berlaku untuk cetak massal maupun satuan. Setiap kartu memuat kelas, nomor kursi, dan watermark logo opsional.
 - **Kartu Satuan** menyediakan pencarian berdasarkan nama, kelas, atau nomor kursi sebelum mencetak satu peserta dengan ukuran kartu yang sama seperti cetak massal. Untuk menyimpan sebagai PDF, pilih **Save as PDF** pada dialog cetak.
 - Tidak ada logo bawaan. Logo kartu dapat diunggah sendiri dalam format PNG, JPG, atau WEBP dengan ukuran maksimal 5 MB; logo disimpan di browser yang digunakan.
 
