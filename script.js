@@ -10,8 +10,7 @@
         let studentCardLogo = '';
         let studentCardSettings = { ...DEFAULT_STUDENT_CARD_SETTINGS };
 
-        // Data State Utama
-        let config = {
+        const DEFAULT_CONFIG = {
             roomCode: "R.005",
             roomName: "R. Pusaka",
             rows: 10,
@@ -21,6 +20,7 @@
             supervisorPosition: 'center',
             footerText: "SANTRI YANG TIDAK MASUK RUANGAN UJIAN HARAP KONFIRMASI BENDAHARA UJIAN & SEKRETARIS UJIAN"
         };
+        let config = { ...DEFAULT_CONFIG };
 
         // Data Peserta (Disimpan dalam Array of Object)
         let studentsList = [];
@@ -31,47 +31,6 @@
         let singleStudentCardOptions = [];
         
         let activeEditKey = null;
-
-        // Sample Data sesuai gambar yang dilampirkan pengguna
-        const SAMPLE_STUDENTS = [
-            { name: "Agiansyah S. Maulana", grade: "1 TSANAWI", isRed: false },
-            { name: "Alby Fahri A.", grade: "1 IBTIDA", isRed: false },
-            { name: "Faris Alfarisi", grade: "2 IBTIDA", isRed: false },
-            { name: "M. Zavier Evans", grade: "3 IBTIDA", isRed: false },
-            { name: "Burhan", grade: "1 TSANAWI", isRed: false },
-            { name: "Gilang Nugraha", grade: "2 TSANAWI", isRed: false },
-            { name: "Iqbal", grade: "3 TSANAWI", isRed: false },
-            { name: "Muhammad Adakiya N.", grade: "4 TSANAWI", isRed: false },
-            { name: "Dzikri M. Fadhlan", grade: "1 IBTIDA", isRed: false },
-            { name: "Rifan Lutfi F.", grade: "2 IBTIDA", isRed: false },
-            { name: "M. Sabil Nuda", grade: "3 IBTIDA", isRed: false },
-            { name: "Deni Ramdani", grade: "1 TSANAWI", isRed: false },
-            { name: "Imam Mutaqin", grade: "2 IBTIDA", isRed: false },
-            { name: "M. Faiz Fadhilah", grade: "3 TSANAWI", isRed: false },
-            { name: "Muhammad Akbarudin", grade: "4 TSANAWI", isRed: false },
-            { name: "Khairul Azam M.", grade: "2 IBTIDA", isRed: false },
-            { name: "M. Alif Fauzan", grade: "3 IBTIDA", isRed: true },
-            { name: "Devansyah", grade: "1 TSANAWI", isRed: false },
-            { name: "Hasbi Mahesa", grade: "2 TSANAWI", isRed: false },
-            { name: "M. Farel Budiman", grade: "3 TSANAWI", isRed: false },
-            { name: "Muhammad Fahri Rahmani", grade: "4 TSANAWI", isRed: true },
-            { name: "M. Hasbi Alghifary", grade: "2 IBTIDA", isRed: false },
-            { name: "Rabban R. Ridwan", grade: "3 IBTIDA", isRed: false },
-            { name: "Fathan Almaidan", grade: "1 TSANAWI", isRed: false },
-            { name: "Iqbal Agustia", grade: "2 TSANAWI", isRed: false },
-            { name: "Habibi Khairul", grade: "1 IBTIDA", isRed: false },
-            { name: "Muhammad Daffa", grade: "2 IBTIDA", isRed: false },
-            { name: "Muhammad Fahri", grade: "3 IBTIDA", isRed: false },
-            { name: "Fikri Ardiansyah", grade: "1 TSANAWI", isRed: false },
-            { name: "Kholid Padhil A.", grade: "2 TSANAWI", isRed: false },
-            { name: "Muhammad Fajar M.", grade: "3 IBTIDA", isRed: false },
-            { name: "M. Abdul Aziz", grade: "2 IBTIDA", isRed: false },
-            { name: "Ibal Hidayatullah", grade: "2 TSANAWI", isRed: false },
-            { name: "Majida Arjaei", grade: "2 IBTIDA", isRed: false },
-            { name: "Muhammad Lutfi Farhan", grade: "3 TSANAWI", isRed: false },
-            { name: "Muhammad Thoriq", grade: "3 IBTIDA", isRed: false },
-            { name: "M. Agus Ramdan", grade: "2 IBTIDA", isRed: false }
-        ];
 
         function saveCurrentState() {
             const state = {
@@ -187,18 +146,45 @@
         }
 
 
+        function initializeEmptyState() {
+            config = { ...DEFAULT_CONFIG };
+            studentsList = [];
+            smkMajors = [];
+            studentCardSettings = { ...DEFAULT_STUDENT_CARD_SETTINGS };
+            gridData = {};
+
+            document.getElementById('input-room-code').value = config.roomCode;
+            document.getElementById('input-room-name').value = config.roomName;
+            document.getElementById('input-rows').value = config.rows;
+            document.getElementById('input-cols').value = config.cols;
+            document.getElementById('input-footer-text').value = config.footerText;
+            document.getElementById('check-enable-pengawas').checked = config.showPengawas;
+            document.getElementById('select-supervisor-position').value = config.supervisorPosition;
+            document.getElementById('select-distribution-method').value = 'zigzag';
+
+            updateHeader();
+            updateFooter();
+            togglePengawas();
+            applyCanvasOrientation();
+            applySupervisorPosition();
+            renderSMKMajors();
+            updateStudentTextarea();
+            renderGrid();
+            saveCurrentState();
+        }
+
         function restoreState() {
             restoreStudentCardLogo();
             const saved = localStorage.getItem(STORAGE_KEY);
             if (!saved) {
-                loadSampleData();
+                initializeEmptyState();
                 return;
             }
 
             try {
                 const state = JSON.parse(saved);
                 if (!state || !state.config) {
-                    loadSampleData();
+                    initializeEmptyState();
                     return;
                 }
 
@@ -233,7 +219,7 @@
             } catch (error) {
                 console.error('Gagal memuat data tersimpan:', error);
                 localStorage.removeItem(STORAGE_KEY);
-                loadSampleData();
+                initializeEmptyState();
             }
         }
 
@@ -815,40 +801,6 @@
             document.getElementById('count-badge').textContent = studentsList.length;
         }
 
-        // Load Sample Data (Persis seperti denah lama pengguna, dengan pengawas di depan)
-        function loadSampleData() {
-            studentsList = [...SAMPLE_STUDENTS];
-            updateStudentTextarea();
-            
-            config.rows = 10;
-            config.cols = 4;
-            config.showPengawas = true;
-            config.supervisorPosition = 'center';
-
-            document.getElementById('input-rows').value = 10;
-            document.getElementById('input-cols').value = 4;
-            document.getElementById('check-enable-pengawas').checked = true;
-            document.getElementById('select-supervisor-position').value = config.supervisorPosition;
-            applySupervisorPosition();
-
-            // Indeks peserta per kursi; null menandai kursi kosong.
-            const sampleSeating = [
-                [0, 1, 2, null], [3, 4, 5, 6], [7, 8, 9, 10],
-                [11, 12, 13, 14], [15, 16, 17, 18], [19, 20, 21, null],
-                [22, 23, null, 24], [25, 26, 27, 28], [29, 30, 31, 32],
-                [33, 34, 35, 36]
-            ];
-            gridData = Object.fromEntries(sampleSeating.flatMap((row, rowIndex) =>
-                row.map((studentIndex, colIndex) => [
-                    `${rowIndex + 1}-${colIndex + 1}`,
-                    studentIndex === null ? { empty: true } : { ...SAMPLE_STUDENTS[studentIndex] }
-                ])
-            ));
-
-            renderGrid();
-            saveCurrentState();
-        }
-
         // Parse semua input kelas menjadi daftar peserta
         function parseAndSaveStudents() {
             const parsed = [];
@@ -1162,6 +1114,5 @@
                 updateStudentTextarea();
                 renderGrid();
                 saveCurrentState();
-                localStorage.removeItem(STORAGE_KEY);
             }
         }
