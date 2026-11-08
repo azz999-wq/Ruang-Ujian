@@ -337,6 +337,15 @@
 
         <!-- Preview Denah Area (Will be printed) -->
         <section class="lg:col-span-8">
+            <div id="room-capacity-summary" class="room-capacity-summary no-print" role="status" aria-live="polite" aria-label="Ringkasan kapasitas ruangan">
+                <span class="capacity-summary-icon"><i class="fa-solid fa-chair" aria-hidden="true"></i></span>
+                <div class="capacity-summary-copy">
+                    <strong id="capacity-summary-title">Kursi masih tersedia</strong>
+                    <span id="capacity-summary-detail">0 peserta terdaftar</span>
+                    <span id="capacity-summary-unassigned" class="hidden"></span>
+                </div>
+                <span id="capacity-summary-count" class="capacity-summary-count">0 / 40</span>
+            </div>
             <div id="print-sheet" class="print-area bg-white rounded-xl shadow-md border border-slate-200 p-6 sm:p-8 flex flex-col justify-between w-full max-w-[210mm] min-h-[330mm] mx-auto">
                 
                 <div>

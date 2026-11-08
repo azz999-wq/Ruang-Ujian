@@ -230,6 +230,7 @@
                 smkMajors,
                 studentCardSettings,
                 gridData,
+                selectedDistributionMethod: document.getElementById('select-distribution-method').value,
                 exportedAt: new Date().toISOString()
             };
 
@@ -286,6 +287,7 @@
             document.getElementById('input-footer-text').value = config.footerText;
             document.getElementById('check-enable-pengawas').checked = !!config.showPengawas;
             document.getElementById('select-supervisor-position').value = config.supervisorPosition;
+            document.getElementById('select-distribution-method').value = imported.selectedDistributionMethod || 'zigzag';
 
             updateHeader();
             updateFooter();
@@ -619,6 +621,12 @@
             }
         });
 
+        document.addEventListener('input', function(event) {
+            if (event.target.matches('[data-student-grade], [data-student-custom]')) {
+                updateCapacitySummary();
+            }
+        });
+
         // Inisialisasi Saat Halaman Di-load
         window.onload = function() {
             restoreState();
@@ -769,7 +777,65 @@
             document.getElementById('smk-major-message').textContent = movedLines.length
                 ? `${major} dihapus; isian peserta dipindahkan ke Kelas lainnya.`
                 : `${major} dihapus.`;
+            updateCapacitySummary();
             saveCurrentState();
+        }
+
+        function getStudentInputList() {
+            const parsed = [];
+
+            function parseLines(rawText, fixedGrade) {
+                rawText.split('\n').forEach(line => {
+                    const parts = line.trim().split('|').map(part => part.trim());
+                    const name = parts[0] || '';
+                    if (!name) return;
+
+                    const grade = fixedGrade || parts[1] || '';
+                    const tag = fixedGrade
+                        ? (parts[2] || parts[1] || '').toLowerCase()
+                        : (parts[2] || '').toLowerCase();
+                    parsed.push({
+                        name,
+                        grade,
+                        isRed: tag === 'merah' || tag === 'red'
+                    });
+                });
+            }
+
+            document.querySelectorAll('[data-student-grade]').forEach(input => {
+                parseLines(input.value, input.dataset.studentGrade);
+            });
+            parseLines(document.getElementById('students-other').value, '');
+            return parsed;
+        }
+
+        function updateCapacitySummary() {
+            const summary = document.getElementById('room-capacity-summary');
+            if (!summary) return;
+
+            const participants = getStudentInputList();
+            const capacity = config.rows * config.cols;
+            const assignedCount = Math.min(participants.length, capacity);
+            const unassigned = participants.slice(capacity);
+            const title = document.getElementById('capacity-summary-title');
+            const detail = document.getElementById('capacity-summary-detail');
+            const names = document.getElementById('capacity-summary-unassigned');
+
+            summary.classList.toggle('is-over-capacity', unassigned.length > 0);
+            title.textContent = unassigned.length
+                ? `${unassigned.length} peserta belum kebagian tempat`
+                : participants.length === capacity
+                    ? 'Kapasitas ruangan penuh'
+                    : 'Kursi masih tersedia';
+            detail.textContent = unassigned.length
+                ? `${participants.length} peserta terdaftar untuk ${capacity} kursi.`
+                : `${participants.length} peserta terdaftar • ${capacity - participants.length} kursi tersedia.`;
+            names.textContent = unassigned.length
+                ? `Belum kebagian: ${unassigned.slice(0, 5).map(student => student.name).join(', ')}${unassigned.length > 5 ? `, dan ${unassigned.length - 5} lainnya` : ''}`
+                : '';
+            names.classList.toggle('hidden', unassigned.length === 0);
+            document.getElementById('capacity-summary-count').textContent = `${assignedCount} / ${capacity}`;
+            document.getElementById('count-badge').textContent = participants.length;
         }
 
         const STUDENT_CLASSES = [
@@ -810,35 +876,14 @@
 
         // Parse semua input kelas menjadi daftar peserta
         function parseAndSaveStudents() {
-            const parsed = [];
+            const parsed = getStudentInputList();
 
-            function parseLines(rawText, fixedGrade) {
-                rawText.split('\n').forEach(line => {
-                    const parts = line.trim().split('|').map(part => part.trim());
-                    const name = parts[0] || '';
-                    if (!name) return;
-
-                    const grade = fixedGrade || parts[1] || '';
-                    const tag = fixedGrade
-                        ? (parts[2] || parts[1] || '').toLowerCase()
-                        : (parts[2] || '').toLowerCase();
-                    parsed.push({
-                        name,
-                        grade,
-                        isRed: tag === 'merah' || tag === 'red'
-                    });
-                });
-            }
-
-            document.querySelectorAll('[data-student-grade]').forEach(input => {
-                parseLines(input.value, input.dataset.studentGrade);
-            });
-            parseLines(document.getElementById('students-other').value, '');
-
+            const previousStudents = studentsList;
             studentsList = parsed;
-            document.getElementById('count-badge').textContent = studentsList.length;
-            autoDistribute();
-            saveCurrentState();
+            if (!autoDistribute()) {
+                studentsList = previousStudents;
+                updateCapacitySummary();
+            }
         }
 
         // Update Header & Footer Text
@@ -948,16 +993,16 @@
                 gridData = {};
                 renderGrid();
                 saveCurrentState();
-                return;
+                return true;
             }
 
-            let pool = [...studentsList];
+            let pool = studentsList.slice(0, config.rows * config.cols);
 
             if (method === 'zigzag') {
                 pool = createSeparatedRandomPool();
                 if (!pool) {
                     alert('Belum ditemukan susunan tanpa kelas yang bersebelahan. Coba tambah jumlah baris atau kolom, atau pilih metode lain.');
-                    return;
+                    return false;
                 }
             }
 
@@ -999,6 +1044,7 @@
 
             renderGrid();
             saveCurrentState();
+            return true;
         }
 
         // Render UI Grid Denah Meja
@@ -1052,10 +1098,10 @@
                         
                         deskCard.innerHTML = `
                             <div class="min-w-0 whitespace-normal break-words px-1 py-1 ${isRedClass} border-b border-slate-300 leading-tight" style="font-size: ${nameFontSize}px">
-                                ${deskData.name || '-'}
+                                ${escapeHTML(deskData.name || '-')}
                             </div>
                             <div class="min-w-0 whitespace-normal break-words px-1 py-0.5 font-semibold text-slate-900 uppercase tracking-tight bg-slate-50" style="font-size: ${gradeFontSize}px">
-                                ${deskData.grade || '-'}
+                                ${escapeHTML(deskData.grade || '-')}
                             </div>
                         `;
                     }
@@ -1065,12 +1111,14 @@
 
                 gridContainer.appendChild(rowDiv);
             }
+
+            updateCapacitySummary();
         }
 
         // Modal Edit Desk Manual
         function openEditModal(r, c) {
             activeEditKey = `${r}-${c}`;
-            const rowChar = String.fromCharCode(64 + r);
+            const rowChar = getRowLabel(r);
             document.getElementById('modal-title').textContent = `Edit Meja ${rowChar}${c}`;
 
             const data = gridData[activeEditKey] || {};
