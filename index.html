@@ -11,17 +11,16 @@
     <style>
         :root {
             color-scheme: light;
-            --ink: #17332f;
-            --muted: #62736e;
-            --green: #0a765f;
-            --green-dark: #075548;
-            --mint: #e8f2ed;
-            --paper: #f3f7f5;
+            --ink: #172f52;
+            --muted: #64758e;
+            --blue: #2563eb;
+            --blue-dark: #1d4ed8;
+            --blue-light: #eaf1ff;
+            --paper: #f3f7fc;
             --white: #ffffff;
-            --line: #d7e2dd;
+            --line: #d7e1ef;
             --orange: #e77451;
             --yellow: #e7bd53;
-            --blue: #427c91;
         }
 
         * {
@@ -32,7 +31,7 @@
             min-width: 320px;
             min-height: 100vh;
             margin: 0;
-            background: var(--paper);
+            background: linear-gradient(145deg, #f4f8ff 0%, var(--paper) 52%, #eaf1fc 100%);
             color: var(--ink);
             font-family: 'Manrope', sans-serif;
         }
@@ -67,13 +66,13 @@
             display: grid;
             place-items: center;
             border-radius: 9px;
-            background: var(--green);
+            background: linear-gradient(135deg, #3b82f6, var(--blue-dark));
             color: var(--white);
             font-size: 16px;
         }
 
         .brand-pro {
-            color: var(--green);
+            color: var(--blue);
         }
 
         .top-link {
@@ -82,16 +81,16 @@
             align-items: center;
             gap: 10px;
             padding: 0 15px;
-            border: 1px solid #b9cec5;
+            border: 1px solid #c5d5ec;
             border-radius: 6px;
-            color: var(--green-dark);
+            color: var(--blue-dark);
             font-size: 12px;
             font-weight: 800;
             transition: background 160ms ease, color 160ms ease;
         }
 
         .top-link:hover {
-            background: var(--green-dark);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
             color: var(--white);
         }
 
@@ -119,7 +118,7 @@
             align-items: center;
             gap: 9px;
             margin: 0 0 14px;
-            color: var(--green);
+            color: var(--blue-dark);
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
@@ -142,7 +141,7 @@
         }
 
         h1 span {
-            color: var(--green);
+            color: var(--blue);
         }
 
         .hero-description {
@@ -162,7 +161,7 @@
             gap: 16px;
             padding: 0 18px;
             border-radius: 6px;
-            background: var(--green);
+            background: linear-gradient(135deg, #3b82f6, var(--blue-dark));
             color: var(--white);
             font-size: 13px;
             font-weight: 800;
@@ -172,7 +171,7 @@
 
         .hero-action:hover {
             transform: translateY(-2px);
-            background: var(--green-dark);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
         }
 
         .hero-action-icon {
@@ -189,7 +188,7 @@
             border: 1px solid #cbdad3;
             border-radius: 10px;
             background: var(--white);
-            box-shadow: 0 18px 48px rgb(24 60 49 / 0.09);
+            box-shadow: 0 18px 48px rgb(37 99 235 / 0.09);
             animation: arrive 620ms 70ms ease both;
         }
 
@@ -234,7 +233,7 @@
             padding: 0 10px;
             border: 1px solid #c5d8ce;
             border-radius: 4px;
-            color: var(--green-dark);
+            color: var(--blue-dark);
             font-size: 9px;
             font-weight: 800;
         }
@@ -276,9 +275,9 @@
             justify-content: center;
             gap: 8px;
             margin: 0 auto;
-            border: 1px solid var(--green-dark);
+            border: 1px solid var(--blue-dark);
             border-radius: 4px;
-            background: var(--green);
+            background: linear-gradient(135deg, #3b82f6, var(--blue-dark));
             color: var(--white);
             font-size: 10px;
             font-weight: 800;
@@ -376,7 +375,7 @@
         }
 
         .preview-footer i {
-            color: var(--green);
+            color: var(--blue);
         }
 
         .preview-metrics {

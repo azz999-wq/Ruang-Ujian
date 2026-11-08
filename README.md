@@ -1,6 +1,6 @@
 # Ruang-Ujian
 
-DenahUjian Pro adalah aplikasi web sederhana untuk menyusun denah tempat duduk ujian dan kartu peserta.
+DenahUjian Pro adalah aplikasi web sederhana untuk menyusun denah tempat duduk ujian dan kartu peserta. Tampilannya menggunakan palet biru dengan gradien ringan.
 
 ## Menjalankan Aplikasi
 
