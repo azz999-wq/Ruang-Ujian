@@ -12,7 +12,7 @@ Buka `https://azz999-wq.github.io/Ruang-Ujian` di browser, lalu pilih **Mulai bu
 2. Pilih orientasi kanvas **Potret** atau **Lanskap**. Orientasi yang dipilih juga digunakan saat mencetak denah.
 3. Tentukan jumlah baris dan kolom. Jumlah kolom dapat diatur dari 1 sampai 8; jumlah baris tidak dibatasi dan label berlanjut dari A-Z ke AA, AB, dan seterusnya.
 4. Aktifkan atau sembunyikan meja pengawas, pilih posisinya di depan kelas (kiri, tengah, atau kanan), dan tampilkan dengan warna biru.
-5. Buka tab **Peserta** dan masukkan satu nama per baris pada kelas yang sesuai. Untuk kelas lain, gunakan format `Nama peserta | Nama kelas`. Tambahkan `| merah` atau `| red` untuk menandai status khusus.
+5. Buka tab **Peserta**, lalu pilih **Kelas Sekolah** (SMP kelas 7-9 atau SMA/SMK kelas 10-12) atau **Kelas Pengajian** (SP sampai 4 Tsanawi). Masukkan satu nama per baris pada kelas yang sesuai. Untuk kelas lain, gunakan format `Nama peserta | Nama kelas`. Tambahkan `| merah` atau `| red` untuk menandai status khusus.
 6. Pilih metode pengurutan duduk, lalu klik **Terapkan Pembagian Meja**. Metode **Acak, kelas tidak bersebelahan** mengacak peserta dan berusaha memastikan peserta dengan kelas yang sama tidak duduk berdampingan secara horizontal maupun vertikal. Meja juga dapat diedit langsung dengan mengekliknya pada denah.
 
 ## Cetak dan Simpan

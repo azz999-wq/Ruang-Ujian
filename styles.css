@@ -6,6 +6,46 @@
             min-width: 0;
         }
 
+        .student-category-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4px;
+            margin-bottom: 12px;
+            padding: 4px;
+            border: 1px solid #d5e0dc;
+            border-radius: 7px;
+            background: #f1f5f3;
+        }
+
+        .student-category-tabs button {
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 0 8px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            background: transparent;
+            color: #64746e;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease;
+        }
+
+        .student-category-tabs button[aria-pressed="true"] {
+            border-color: #d7e2dd;
+            background: #fff;
+            color: #075548;
+            box-shadow: 0 1px 3px rgb(23 51 47 / 0.1);
+        }
+
+        .student-category-tabs button:focus-visible {
+            outline: 2px solid #0284c7;
+            outline-offset: 2px;
+        }
+
         .print-dropdown {
             position: relative;
             flex: 0 0 auto;

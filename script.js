@@ -572,7 +572,25 @@
             }
         }
 
+        function switchStudentGroup(group) {
+            const showSchool = group === 'school';
+            document.querySelectorAll('[data-student-group="school"]').forEach(inputGroup => {
+                inputGroup.classList.toggle('hidden', !showSchool);
+            });
+            document.querySelectorAll('[data-student-group="religious"]').forEach(inputGroup => {
+                inputGroup.classList.toggle('hidden', showSchool);
+            });
+            document.getElementById('student-group-school-button').setAttribute('aria-pressed', String(showSchool));
+            document.getElementById('student-group-religious-button').setAttribute('aria-pressed', String(!showSchool));
+        }
+
         const STUDENT_CLASSES = [
+            '7 SMP',
+            '8 SMP',
+            '9 SMP',
+            '10 SMA/SMK',
+            '11 SMA/SMK',
+            '12 SMA/SMK',
             'SP',
             '1 IBTIDA',
             '2 IBTIDA',

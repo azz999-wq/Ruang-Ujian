@@ -217,38 +217,70 @@
                     <div>
                         <div class="mb-3">
                             <label class="block text-xs font-semibold text-slate-600">Input Peserta per Kelas</label>
-                            <p class="text-[10px] text-slate-400 mt-1">Masukkan satu nama per baris. Tambahkan <code class="font-bold">| merah</code> di belakang nama untuk status khusus.</p>
+                            <p class="text-[10px] text-slate-400 mt-1">Pilih kategori kelas, lalu masukkan satu nama per baris. Tambahkan <code class="font-bold">| merah</code> di belakang nama untuk status khusus.</p>
+                        </div>
+                        <div class="student-category-tabs" role="group" aria-label="Kategori kelas peserta">
+                            <button id="student-group-school-button" type="button" aria-pressed="true" onclick="switchStudentGroup('school')">
+                                <i class="fa-solid fa-school" aria-hidden="true"></i> Kelas Sekolah
+                            </button>
+                            <button id="student-group-religious-button" type="button" aria-pressed="false" onclick="switchStudentGroup('religious')">
+                                <i class="fa-solid fa-book-open" aria-hidden="true"></i> Kelas Pengajian
+                            </button>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
-                            <div>
+                            <div data-student-group="school">
+                                <label for="students-smp-7" class="block text-[11px] font-semibold text-slate-600 mb-1">7 SMP</label>
+                                <textarea id="students-smp-7" data-student-grade="7 SMP" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
+                            </div>
+                            <div data-student-group="school">
+                                <label for="students-smp-8" class="block text-[11px] font-semibold text-slate-600 mb-1">8 SMP</label>
+                                <textarea id="students-smp-8" data-student-grade="8 SMP" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
+                            </div>
+                            <div data-student-group="school">
+                                <label for="students-smp-9" class="block text-[11px] font-semibold text-slate-600 mb-1">9 SMP</label>
+                                <textarea id="students-smp-9" data-student-grade="9 SMP" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
+                            </div>
+                            <div data-student-group="school">
+                                <label for="students-sma-smk-10" class="block text-[11px] font-semibold text-slate-600 mb-1">10 SMA/SMK</label>
+                                <textarea id="students-sma-smk-10" data-student-grade="10 SMA/SMK" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
+                            </div>
+                            <div data-student-group="school">
+                                <label for="students-sma-smk-11" class="block text-[11px] font-semibold text-slate-600 mb-1">11 SMA/SMK</label>
+                                <textarea id="students-sma-smk-11" data-student-grade="11 SMA/SMK" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
+                            </div>
+                            <div data-student-group="school">
+                                <label for="students-sma-smk-12" class="block text-[11px] font-semibold text-slate-600 mb-1">12 SMA/SMK</label>
+                                <textarea id="students-sma-smk-12" data-student-grade="12 SMA/SMK" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
+                            </div>
+                            <div class="hidden" data-student-group="religious">
                                 <label for="students-SP" class="block text-[11px] font-semibold text-slate-600 mb-1">SP</label>
                                 <textarea id="students-SP" data-student-grade="SP" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div>
+                            <div class="hidden" data-student-group="religious">
                                 <label for="students-1-ibtida" class="block text-[11px] font-semibold text-slate-600 mb-1">1 Ibtida</label>
                                 <textarea id="students-1-ibtida" data-student-grade="1 IBTIDA" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div>
+                            <div class="hidden" data-student-group="religious">
                                 <label for="students-2-ibtida" class="block text-[11px] font-semibold text-slate-600 mb-1">2 Ibtida</label>
                                 <textarea id="students-2-ibtida" data-student-grade="2 IBTIDA" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div>
+                            <div class="hidden" data-student-group="religious">
                                 <label for="students-3-ibtida" class="block text-[11px] font-semibold text-slate-600 mb-1">3 Ibtida</label>
                                 <textarea id="students-3-ibtida" data-student-grade="3 IBTIDA" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div>
+                            <div class="hidden" data-student-group="religious">
                                 <label for="students-1-tsanawi" class="block text-[11px] font-semibold text-slate-600 mb-1">1 Tsanawi</label>
                                 <textarea id="students-1-tsanawi" data-student-grade="1 TSANAWI" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div>
+                            <div class="hidden" data-student-group="religious">
                                 <label for="students-2-tsanawi" class="block text-[11px] font-semibold text-slate-600 mb-1">2 Tsanawi</label>
                                 <textarea id="students-2-tsanawi" data-student-grade="2 TSANAWI" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div>
+                            <div class="hidden" data-student-group="religious">
                                 <label for="students-3-tsanawi" class="block text-[11px] font-semibold text-slate-600 mb-1">3 Tsanawi</label>
                                 <textarea id="students-3-tsanawi" data-student-grade="3 TSANAWI" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
-                            <div>
+                            <div class="hidden" data-student-group="religious">
                                 <label for="students-4-tsanawi" class="block text-[11px] font-semibold text-slate-600 mb-1">4 Tsanawi</label>
                                 <textarea id="students-4-tsanawi" data-student-grade="4 TSANAWI" rows="4" placeholder="Nama peserta" class="w-full px-2.5 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none leading-relaxed"></textarea>
                             </div>
