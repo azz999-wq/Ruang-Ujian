@@ -1,3 +1,118 @@
+        .generator-header-inner {
+            gap: 16px;
+        }
+
+        .header-actions {
+            min-width: 0;
+        }
+
+        .print-menu {
+            display: flex;
+            flex: 0 0 auto;
+            align-items: center;
+            gap: 4px;
+            padding: 4px;
+            border: 1px solid #d5e0dc;
+            border-radius: 8px;
+            background: #f3f7f5;
+            color: #17332f;
+        }
+
+        .print-menu-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 0 9px 0 7px;
+            color: #62736e;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        .print-menu-label i {
+            color: #e77451;
+            font-size: 12px;
+        }
+
+        .print-menu-button {
+            min-height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 0 10px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            background: transparent;
+            color: #31534b;
+            font: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+        }
+
+        .print-menu-button:hover {
+            transform: translateY(-1px);
+            background: #e5eeea;
+            color: #075548;
+        }
+
+        .print-menu-primary {
+            background: #e77451;
+            color: #fff;
+            box-shadow: 0 2px 6px rgb(131 63 42 / 0.2);
+        }
+
+        .print-menu-primary:hover {
+            background: #cf5f40;
+            color: #fff;
+        }
+
+        .print-menu-button:focus-visible {
+            outline: 2px solid #e77451;
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 1050px) {
+            .generator-header-inner {
+                height: auto;
+                min-height: 64px;
+                flex-wrap: wrap;
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+
+            .header-actions {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 2px;
+                scrollbar-width: none;
+            }
+
+            .header-actions::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .print-menu-label {
+                gap: 0;
+                padding: 0 7px;
+            }
+
+            .print-menu-label span,
+            .print-menu-button span {
+                display: none;
+            }
+
+            .print-menu-button {
+                width: 36px;
+                padding: 0;
+            }
+        }
+
         .canvas-orientation-control {
             display: flex;
             width: 100%;
