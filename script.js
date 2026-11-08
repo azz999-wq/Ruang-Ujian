@@ -612,6 +612,13 @@
             }
         });
 
+        document.addEventListener('click', function(event) {
+            const printMenu = document.querySelector('.print-dropdown');
+            if (printMenu?.open && !printMenu.contains(event.target)) {
+                printMenu.open = false;
+            }
+        });
+
         // Inisialisasi Saat Halaman Di-load
         window.onload = function() {
             restoreState();
