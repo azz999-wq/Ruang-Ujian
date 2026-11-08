@@ -6,73 +6,171 @@
             min-width: 0;
         }
 
-        .print-menu {
-            display: flex;
+        .print-dropdown {
+            position: relative;
             flex: 0 0 auto;
-            align-items: center;
-            gap: 4px;
-            padding: 4px;
-            border: 1px solid #d5e0dc;
-            border-radius: 8px;
-            background: #f3f7f5;
-            color: #17332f;
         }
 
-        .print-menu-label {
+        .print-dropdown-trigger {
+            min-height: 40px;
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            padding: 0 9px 0 7px;
-            color: #62736e;
+            gap: 9px;
+            padding: 0 14px;
+            border: 1px solid #e98566;
+            border-radius: 6px;
+            background: #e77451;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            list-style: none;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgb(9 20 33 / 0.18);
+            transition: background 150ms ease, transform 150ms ease;
+        }
+
+        .print-dropdown-trigger::-webkit-details-marker {
+            display: none;
+        }
+
+        .print-dropdown-trigger:hover {
+            transform: translateY(-1px);
+            background: #cf5f40;
+        }
+
+        .print-dropdown[open] .print-dropdown-trigger {
+            background: #cf5f40;
+        }
+
+        .print-dropdown-chevron {
+            margin-left: 3px;
+            font-size: 9px;
+            transition: transform 150ms ease;
+        }
+
+        .print-dropdown[open] .print-dropdown-chevron {
+            transform: rotate(180deg);
+        }
+
+        .print-dropdown-trigger:focus-visible,
+        .print-dropdown-option:focus-visible {
+            outline: 2px solid #e98566;
+            outline-offset: 3px;
+        }
+
+        .print-dropdown-panel {
+            position: absolute;
+            z-index: 60;
+            top: calc(100% + 10px);
+            right: 0;
+            width: 292px;
+            padding: 8px;
+            border: 1px solid #d9e2df;
+            border-radius: 8px;
+            background: #fff;
+            color: #17332f;
+            box-shadow: 0 16px 38px rgb(9 20 33 / 0.22);
+            animation: print-menu-enter 140ms ease both;
+        }
+
+        .print-dropdown-panel::before {
+            position: absolute;
+            top: -6px;
+            right: 18px;
+            width: 10px;
+            height: 10px;
+            border-top: 1px solid #d9e2df;
+            border-left: 1px solid #d9e2df;
+            background: #fff;
+            content: "";
+            transform: rotate(45deg);
+        }
+
+        .print-dropdown-heading {
+            margin: 4px 8px 7px;
+            color: #73827d;
             font-size: 9px;
             font-weight: 800;
             letter-spacing: 0.08em;
         }
 
-        .print-menu-label i {
-            color: #e77451;
-            font-size: 12px;
-        }
-
-        .print-menu-button {
-            min-height: 34px;
-            display: inline-flex;
+        .print-dropdown-option {
+            width: 100%;
+            min-height: 58px;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 7px;
-            padding: 0 10px;
-            border: 1px solid transparent;
+            gap: 11px;
+            padding: 8px;
+            border: 0;
             border-radius: 5px;
             background: transparent;
-            color: #31534b;
-            font: inherit;
-            font-size: 11px;
-            font-weight: 700;
-            white-space: nowrap;
+            color: #17332f;
+            text-align: left;
             cursor: pointer;
-            transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+            transition: background 140ms ease;
         }
 
-        .print-menu-button:hover {
-            transform: translateY(-1px);
-            background: #e5eeea;
-            color: #075548;
+        .print-dropdown-option:hover {
+            background: #f1f6f3;
         }
 
-        .print-menu-primary {
-            background: #e77451;
-            color: #fff;
-            box-shadow: 0 2px 6px rgb(131 63 42 / 0.2);
+        .print-option-icon {
+            width: 36px;
+            height: 36px;
+            flex: 0 0 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 5px;
+            font-size: 14px;
         }
 
-        .print-menu-primary:hover {
-            background: #cf5f40;
-            color: #fff;
+        .print-option-room {
+            background: #fce9e2;
+            color: #bd583c;
         }
 
-        .print-menu-button:focus-visible {
-            outline: 2px solid #e77451;
-            outline-offset: 2px;
+        .print-option-cards {
+            background: #e6f1ed;
+            color: #0a765f;
+        }
+
+        .print-option-single {
+            background: #e8eef5;
+            color: #427c91;
+        }
+
+        .print-option-copy {
+            min-width: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .print-option-copy strong {
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .print-option-copy small {
+            color: #6a7b75;
+            font-size: 10px;
+        }
+
+        .print-option-arrow {
+            color: #9aa8a2;
+            font-size: 10px;
+        }
+
+        @keyframes print-menu-enter {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 1050px) {
@@ -86,30 +184,8 @@
 
             .header-actions {
                 width: 100%;
-                overflow-x: auto;
+                flex-wrap: wrap;
                 padding-bottom: 2px;
-                scrollbar-width: none;
-            }
-
-            .header-actions::-webkit-scrollbar {
-                display: none;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .print-menu-label {
-                gap: 0;
-                padding: 0 7px;
-            }
-
-            .print-menu-label span,
-            .print-menu-button span {
-                display: none;
-            }
-
-            .print-menu-button {
-                width: 36px;
-                padding: 0;
             }
         }
 
