@@ -1,6 +1,9 @@
 
         const STORAGE_KEY = 'denah-ujian-pro-state-v1';
         const STUDENT_CARD_LOGO_STORAGE_KEY = 'denah-ujian-student-card-logo-v1';
+        const MAX_GRID_ROWS = 500;
+        const MAX_IMPORT_FILE_BYTES = 5 * 1024 * 1024;
+        const MAX_SMK_MAJORS = 50;
         const DEFAULT_STUDENT_CARD_SETTINGS = {
             title: 'Kartu Peserta Ujian',
             examDays: 5,
@@ -183,7 +186,7 @@
 
             try {
                 const state = JSON.parse(saved);
-                if (!state || !state.config) {
+                if (!state || !state.config || typeof state.config !== 'object' || Array.isArray(state.config)) {
                     initializeEmptyState();
                     return;
                 }
@@ -192,12 +195,10 @@
                 normalizeGridDimensions();
                 normalizeCanvasOrientation();
                 normalizeSupervisorPosition();
-                studentsList = Array.isArray(state.studentsList) ? state.studentsList : [];
-                smkMajors = Array.isArray(state.smkMajors)
-                    ? [...new Set(state.smkMajors.filter(major => typeof major === 'string').map(major => major.trim()).filter(Boolean))]
-                    : [];
+                studentsList = normalizeStudentsList(state.studentsList);
+                smkMajors = normalizeSMKMajors(state.smkMajors);
                 studentCardSettings = normalizeStudentCardSettings(state.studentCardSettings);
-                gridData = state.gridData || {};
+                gridData = normalizeGridData(state.gridData);
 
                 document.getElementById('input-room-code').value = config.roomCode;
                 document.getElementById('input-room-name').value = config.roomName;
@@ -248,6 +249,11 @@
         function importStateFromFile(event) {
             const file = event.target.files?.[0];
             if (!file) return;
+            if (file.size > MAX_IMPORT_FILE_BYTES) {
+                alert('Ukuran file impor maksimal 5 MB.');
+                event.target.value = '';
+                return;
+            }
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -265,7 +271,7 @@
         }
 
         function applyImportedState(imported) {
-            if (!imported || !imported.config) {
+            if (!imported || !imported.config || typeof imported.config !== 'object' || Array.isArray(imported.config)) {
                 throw new Error('Invalid imported data');
             }
 
@@ -273,12 +279,10 @@
             normalizeGridDimensions();
             normalizeCanvasOrientation();
             normalizeSupervisorPosition();
-            studentsList = Array.isArray(imported.studentsList) ? imported.studentsList : [];
-            smkMajors = Array.isArray(imported.smkMajors)
-                ? [...new Set(imported.smkMajors.filter(major => typeof major === 'string').map(major => major.trim()).filter(Boolean))]
-                : [];
+            studentsList = normalizeStudentsList(imported.studentsList);
+            smkMajors = normalizeSMKMajors(imported.smkMajors);
             studentCardSettings = normalizeStudentCardSettings(imported.studentCardSettings);
-            gridData = imported.gridData || {};
+            gridData = normalizeGridData(imported.gridData);
 
             document.getElementById('input-room-code').value = config.roomCode;
             document.getElementById('input-room-name').value = config.roomName;
@@ -311,8 +315,48 @@
         }
 
         function normalizeGridDimensions() {
-            config.rows = Math.max(1, Number.parseInt(config.rows, 10) || 10);
+            config.rows = Math.min(MAX_GRID_ROWS, Math.max(1, Number.parseInt(config.rows, 10) || 10));
             config.cols = Math.min(8, Math.max(1, Number.parseInt(config.cols, 10) || 4));
+        }
+
+        function normalizeStudentsList(value) {
+            if (!Array.isArray(value)) return [];
+            return value
+                .filter(student => student && typeof student === 'object' && !Array.isArray(student))
+                .map(student => ({
+                    name: String(student.name ?? '').trim(),
+                    grade: String(student.grade ?? '').trim(),
+                    isRed: student.isRed === true
+                }))
+                .filter(student => student.name);
+        }
+
+        function normalizeSMKMajors(value) {
+            if (!Array.isArray(value)) return [];
+            return [...new Set(value
+                .filter(major => typeof major === 'string')
+                .map(major => major.trim().slice(0, 64))
+                .filter(Boolean))]
+                .slice(0, MAX_SMK_MAJORS);
+        }
+
+        function normalizeGridData(value) {
+            if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+
+            return Object.fromEntries(Object.entries(value).flatMap(([key, desk]) => {
+                const coordinates = key.match(/^(\d+)-(\d+)$/);
+                if (!coordinates || !desk || typeof desk !== 'object' || Array.isArray(desk)) return [];
+
+                const row = Number(coordinates[1]);
+                const col = Number(coordinates[2]);
+                if (row < 1 || row > MAX_GRID_ROWS || col < 1 || col > 8) return [];
+                if (desk.empty === true) return [[`${row}-${col}`, { empty: true }]];
+
+                const name = String(desk.name ?? '').trim();
+                const grade = String(desk.grade ?? '').trim();
+                if (!name && !grade) return [[`${row}-${col}`, { empty: true }]];
+                return [[`${row}-${col}`, { name, grade, isRed: desk.isRed === true, empty: false }]];
+            }));
         }
 
         function normalizeCanvasOrientation() {
@@ -418,6 +462,7 @@
         }
 
         function normalizeStudentCardSettings(settings = {}) {
+            if (!settings || typeof settings !== 'object' || Array.isArray(settings)) settings = {};
             const examDays = Number.parseInt(settings.examDays, 10);
             return {
                 title: String(settings.title ?? DEFAULT_STUDENT_CARD_SETTINGS.title).trim().slice(0, 48) || DEFAULT_STUDENT_CARD_SETTINGS.title,
@@ -734,7 +779,7 @@
         function addSMKMajor() {
             const input = document.getElementById('smk-major-input');
             const message = document.getElementById('smk-major-message');
-            const major = input.value.trim().replace(/\s+/g, ' ');
+            const major = input.value.trim().replace(/\s+/g, ' ').slice(0, 64);
             if (!major) {
                 message.textContent = 'Masukkan nama jurusan terlebih dahulu.';
                 input.focus();
@@ -742,6 +787,11 @@
             }
             if (smkMajors.some(existingMajor => existingMajor.toUpperCase() === major.toUpperCase())) {
                 message.textContent = 'Jurusan tersebut sudah ada.';
+                input.focus();
+                return;
+            }
+            if (smkMajors.length >= MAX_SMK_MAJORS) {
+                message.textContent = `Maksimal ${MAX_SMK_MAJORS} jurusan.`;
                 input.focus();
                 return;
             }
@@ -930,7 +980,7 @@
             const grouped = {};
 
             studentsList.slice(0, seatCount).forEach(student => {
-                const grade = student.grade.trim().toUpperCase();
+                const grade = String(student.grade || '').trim().toUpperCase();
                 if (!grouped[grade]) grouped[grade] = [];
                 grouped[grade].push(student);
             });

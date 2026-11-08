@@ -131,8 +131,8 @@
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Baris</label>
-                            <input type="number" id="input-rows" min="1" value="10" onchange="generateGrid()" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Baris (1-500)</label>
+                            <input type="number" id="input-rows" min="1" max="500" value="10" onchange="generateGrid()" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Kolom (1-8)</label>
@@ -265,7 +265,7 @@
                             <div id="smk-jurusan-panel" class="hidden col-span-2" data-student-group="school" data-school-type="smk">
                                 <label for="smk-major-input" class="block text-[11px] font-semibold text-slate-600 mb-1">Tambah jurusan SMK</label>
                                 <div class="smk-major-add-row">
-                                    <input id="smk-major-input" type="text" placeholder="Contoh: TKJ, Akuntansi" class="min-w-0 flex-1 px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <input id="smk-major-input" type="text" maxlength="64" placeholder="Contoh: TKJ, Akuntansi" class="min-w-0 flex-1 px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                                     <button type="button" onclick="addSMKMajor()" class="smk-major-add-button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Tambah</button>
                                 </div>
                                 <p id="smk-major-message" class="mt-1 text-[10px] text-slate-500" role="status">Setiap jurusan memiliki input kelas 10, 11, dan 12.</p>
