@@ -353,7 +353,8 @@
                 .map(student => ({
                     name: String(student.name ?? '').trim().slice(0, 120),
                     grade: String(student.grade ?? '').trim().slice(0, 80),
-                    desk: String(student.desk ?? '').trim().slice(0, 12)
+                    desk: String(student.desk ?? '').trim().slice(0, 12),
+                    isRed: student.isRed === true
                 }))
                 .filter(student => student.name);
         }
@@ -1274,8 +1275,25 @@
             clearedStudents.unshift({
                 name: student.name,
                 grade: student.grade,
-                desk: `${getRowLabel(row)}${column}`
+                desk: `${getRowLabel(row)}${column}`,
+                isRed: student.isRed
             });
+        }
+
+        function restoreClearedStudent(name, grade) {
+            const normalizedName = name.trim().toLocaleLowerCase();
+            const normalizedGrade = grade.trim().toLocaleLowerCase();
+            const clearedIndex = clearedStudents.findIndex(student =>
+                student.name.toLocaleLowerCase() === normalizedName
+                && student.grade.toLocaleLowerCase() === normalizedGrade
+            );
+            if (clearedIndex < 0) return false;
+
+            const [student] = clearedStudents.splice(clearedIndex, 1);
+            studentsList = getStudentInputList();
+            studentsList.push({ name: student.name, grade: student.grade, isRed: student.isRed });
+            updateStudentTextarea();
+            return true;
         }
 
         function confirmClearDesk(key) {
@@ -1302,6 +1320,9 @@
                 recordClearedDesk(activeEditKey);
                 gridData[activeEditKey] = { empty: true };
             } else {
+                const previousDesk = gridData[activeEditKey] || {};
+                const wasEmpty = previousDesk.empty || (!previousDesk.name && !previousDesk.grade);
+                if (wasEmpty) restoreClearedStudent(name, grade);
                 gridData[activeEditKey] = { name, grade, isRed, empty: false };
             }
 
