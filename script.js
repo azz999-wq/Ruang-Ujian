@@ -27,6 +27,7 @@
 
         // Data Peserta (Disimpan dalam Array of Object)
         let studentsList = [];
+        let clearedStudents = [];
         let smkMajors = [];
         let activeSchoolType = 'smp';
         // Map penempatan di meja: key "R-C" (cth: "1-1" untuk A1, "7-3" untuk G3)
@@ -39,6 +40,7 @@
             const state = {
                 config,
                 studentsList,
+                clearedStudents,
                 smkMajors,
                 studentCardSettings,
                 gridData,
@@ -152,6 +154,7 @@
         function initializeEmptyState() {
             config = { ...DEFAULT_CONFIG };
             studentsList = [];
+            clearedStudents = [];
             smkMajors = [];
             studentCardSettings = { ...DEFAULT_STUDENT_CARD_SETTINGS };
             gridData = {};
@@ -196,6 +199,7 @@
                 normalizeCanvasOrientation();
                 normalizeSupervisorPosition();
                 studentsList = normalizeStudentsList(state.studentsList);
+                clearedStudents = normalizeClearedStudents(state.clearedStudents);
                 smkMajors = normalizeSMKMajors(state.smkMajors);
                 studentCardSettings = normalizeStudentCardSettings(state.studentCardSettings);
                 gridData = normalizeGridData(state.gridData);
@@ -228,6 +232,7 @@
             const state = {
                 config,
                 studentsList,
+                clearedStudents,
                 smkMajors,
                 studentCardSettings,
                 gridData,
@@ -280,6 +285,7 @@
             normalizeCanvasOrientation();
             normalizeSupervisorPosition();
             studentsList = normalizeStudentsList(imported.studentsList);
+            clearedStudents = normalizeClearedStudents(imported.clearedStudents);
             smkMajors = normalizeSMKMajors(imported.smkMajors);
             studentCardSettings = normalizeStudentCardSettings(imported.studentCardSettings);
             gridData = normalizeGridData(imported.gridData);
@@ -338,6 +344,18 @@
                 .map(major => major.trim().slice(0, 64))
                 .filter(Boolean))]
                 .slice(0, MAX_SMK_MAJORS);
+        }
+
+        function normalizeClearedStudents(value) {
+            if (!Array.isArray(value)) return [];
+            return value
+                .filter(student => student && typeof student === 'object' && !Array.isArray(student))
+                .map(student => ({
+                    name: String(student.name ?? '').trim().slice(0, 120),
+                    grade: String(student.grade ?? '').trim().slice(0, 80),
+                    desk: String(student.desk ?? '').trim().slice(0, 12)
+                }))
+                .filter(student => student.name);
         }
 
         function normalizeGridData(value) {
@@ -886,6 +904,22 @@
             names.classList.toggle('hidden', unassigned.length === 0);
             document.getElementById('capacity-summary-count').textContent = `${assignedCount} / ${capacity}`;
             document.getElementById('count-badge').textContent = participants.length;
+            renderClearedStudents();
+        }
+
+        function renderClearedStudents() {
+            const panel = document.getElementById('cleared-students-panel');
+            if (!panel) return;
+
+            panel.classList.toggle('hidden', clearedStudents.length === 0);
+            document.getElementById('cleared-students-summary').textContent = `Peserta terdampak (${clearedStudents.length})`;
+            const list = document.getElementById('cleared-students-list');
+            list.replaceChildren(...clearedStudents.map(student => {
+                const item = document.createElement('li');
+                const grade = student.grade ? ` • ${student.grade}` : '';
+                item.textContent = `${student.name}${grade} • Meja ${student.desk}`;
+                return item;
+            }));
         }
 
         const STUDENT_CLASSES = [
@@ -1185,6 +1219,65 @@
             activeEditKey = null;
         }
 
+        function removeStudentFromInputs(student) {
+            const inputs = [
+                ...document.querySelectorAll('[data-student-grade]'),
+                document.getElementById('students-other')
+            ];
+            const targetName = String(student.name || '').trim().toLocaleLowerCase();
+            const targetGrade = String(student.grade || '').trim().toLocaleLowerCase();
+            const targetIsRed = student.isRed === true;
+
+            for (const input of inputs) {
+                let removed = false;
+                const remainingLines = input.value.split('\n').filter(line => {
+                    if (removed) return true;
+                    const parts = line.trim().split('|').map(part => part.trim());
+                    const name = parts[0] || '';
+                    if (!name) return true;
+
+                    const grade = input.dataset.studentGrade || parts[1] || '';
+                    const tag = input.dataset.studentGrade
+                        ? (parts[2] || parts[1] || '').toLowerCase()
+                        : (parts[2] || '').toLowerCase();
+                    const isRed = tag === 'merah' || tag === 'red';
+                    const matches = name.toLocaleLowerCase() === targetName
+                        && grade.trim().toLocaleLowerCase() === targetGrade
+                        && isRed === targetIsRed;
+                    if (matches) {
+                        removed = true;
+                        return false;
+                    }
+                    return true;
+                });
+
+                if (removed) {
+                    input.value = remainingLines.join('\n');
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function recordClearedDesk(key) {
+            const deskData = gridData[key] || {};
+            if (deskData.empty || (!deskData.name && !deskData.grade)) return;
+
+            const [row, column] = key.split('-').map(Number);
+            const student = {
+                name: String(deskData.name || 'Peserta tanpa nama').trim(),
+                grade: String(deskData.grade || '').trim(),
+                isRed: deskData.isRed === true
+            };
+            removeStudentFromInputs(student);
+            studentsList = getStudentInputList();
+            clearedStudents.unshift({
+                name: student.name,
+                grade: student.grade,
+                desk: `${getRowLabel(row)}${column}`
+            });
+        }
+
         function confirmClearDesk(key) {
             const deskData = gridData[key] || {};
             if (deskData.empty || (!deskData.name && !deskData.grade)) return true;
@@ -1206,6 +1299,7 @@
 
             if (isEmpty) {
                 if (!confirmClearDesk(activeEditKey)) return;
+                recordClearedDesk(activeEditKey);
                 gridData[activeEditKey] = { empty: true };
             } else {
                 gridData[activeEditKey] = { name, grade, isRed, empty: false };
@@ -1219,6 +1313,7 @@
         function clearSingleDesk() {
             if (!activeEditKey) return;
             if (!confirmClearDesk(activeEditKey)) return;
+            recordClearedDesk(activeEditKey);
             gridData[activeEditKey] = { empty: true };
             closeModal();
             renderGrid();
@@ -1228,6 +1323,7 @@
         function resetData() {
             if (confirm("Apakah Anda yakin ingin mengosongkan denah ruangan?")) {
                 studentsList = [];
+                clearedStudents = [];
                 gridData = {};
                 updateStudentTextarea();
                 renderGrid();
