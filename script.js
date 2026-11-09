@@ -1185,6 +1185,17 @@
             activeEditKey = null;
         }
 
+        function confirmClearDesk(key) {
+            const deskData = gridData[key] || {};
+            if (deskData.empty || (!deskData.name && !deskData.grade)) return true;
+
+            const [row, column] = key.split('-').map(Number);
+            const deskLabel = `${getRowLabel(row)}${column}`;
+            const studentName = deskData.name || 'Peserta tanpa nama';
+            const grade = deskData.grade ? ` (${deskData.grade})` : '';
+            return confirm(`Meja ${deskLabel} ditempati ${studentName}${grade}. Jika dikosongkan, penempatan peserta ini akan dihapus dari denah. Lanjutkan?`);
+        }
+
         function saveDeskChanges() {
             if (!activeEditKey) return;
 
@@ -1194,6 +1205,7 @@
             const isEmpty = document.getElementById('modal-is-empty').checked;
 
             if (isEmpty) {
+                if (!confirmClearDesk(activeEditKey)) return;
                 gridData[activeEditKey] = { empty: true };
             } else {
                 gridData[activeEditKey] = { name, grade, isRed, empty: false };
@@ -1206,6 +1218,7 @@
 
         function clearSingleDesk() {
             if (!activeEditKey) return;
+            if (!confirmClearDesk(activeEditKey)) return;
             gridData[activeEditKey] = { empty: true };
             closeModal();
             renderGrid();
